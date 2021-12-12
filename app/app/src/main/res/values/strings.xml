@@ -2,21 +2,12 @@
     <string name="app_name">social-distance-reminder</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="title">Title</string>
-    <string name="secondary_text">Secondary text</string>
     <string name="enable_notification">Enable Notification</string>
     <string name="enable">Enable</string>
-    <string name="disable">Disable</string>
     <string name="social_distance_reminder">Social Distance Reminder</string>
-    <string name="enable">Enable</string>
     <string name="high_risk">High Risk</string>
     <string name="mild_risk">Mild Risk</string>
     <string name="low_risk">Low Risk</string>
+    <string name="expose_to_covid_19">Expose to Covid-19</string>
 </resources>

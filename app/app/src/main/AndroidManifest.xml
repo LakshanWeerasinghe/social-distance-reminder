@@ -2,16 +2,39 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="lk.ac.mrt.cse.cs4472.social_distance_reminder">
 
+    <!--    Begin Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!--    End Permissions -->
+
     <application
+        android:name=".application.SocialDistanceReminderApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".application.SocialDistanceReminderApplication"
         android:theme="@style/Theme.Socialdistancereminder">
+
+        <!--        Begin Services -->
+        <service
+            android:name=".service.BeaconService"
+            android:enabled="true"
+            android:exported="true" />
+        <!--        End Service -->
+
+        <!--        Begin Activities -->
+        <!--         Home Activity Consist of Dashboard and CovidTracker Fragments -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.HomeActivity"
+            android:label="Home Activity" />
+
+        <!--  Launching Activity -->
+        <activity
+            android:name=".LauncherActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Socialdistancereminder.NoActionBar">
@@ -21,6 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--        End Activities -->
     </application>
 
 </manifest>
