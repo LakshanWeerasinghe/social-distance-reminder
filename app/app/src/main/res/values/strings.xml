@@ -10,4 +10,10 @@
     <string name="mild_risk">Mild Risk</string>
     <string name="low_risk">Low Risk</string>
     <string name="expose_to_covid_19">Expose to Covid-19</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="button_signup">Sign Up</string>
+    <string name="error_phone_number">Enter a Valid Phone Number</string>
+    <string name="hint_phone_verify_code">Enter Code</string>
+    <string name="button_phone_verify">Verify</string>
+    <string name="error_phone_verify">Code not Valid</string>
 </resources>

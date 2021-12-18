@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="lk.ac.mrt.cse.cs4472.social_distance_reminder">
-
-    <!--    Begin Permissions -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <!-- Begin Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!--    End Permissions -->
 
     <application
         android:name=".application.SocialDistanceReminderApplication"
@@ -18,21 +16,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Socialdistancereminder">
-
-        <!--        Begin Services -->
+        <activity
+            android:name=".ui.VerifyPhoneActivity"
+            android:exported="true" />
+        <!-- Begin Services -->
         <service
             android:name=".service.BeaconService"
             android:enabled="true"
-            android:exported="true" />
-        <!--        End Service -->
-
-        <!--        Begin Activities -->
-        <!--         Home Activity Consist of Dashboard and CovidTracker Fragments -->
+            android:exported="true" /> <!-- End Service -->
+        <!-- Begin Activities -->
+        <!-- Home Activity Consist of Dashboard and CovidTracker Fragments -->
         <activity
             android:name=".ui.HomeActivity"
-            android:label="Home Activity" />
-
-        <!--  Launching Activity -->
+            android:label="Home Activity" /> <!-- Launching Activity -->
+        <activity
+            android:name=".ui.SignupActivity"
+            android:exported="true"
+            android:label="Signup Activity" />
         <activity
             android:name=".LauncherActivity"
             android:exported="true"
@@ -44,7 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--        End Activities -->
     </application>
 
 </manifest>

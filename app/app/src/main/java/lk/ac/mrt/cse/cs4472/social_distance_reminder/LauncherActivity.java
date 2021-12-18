@@ -7,10 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActivity;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.SignupActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 
-    private final boolean firstLaunch = false;
+    private final boolean firstLaunch = true;
 
 
     @Override
@@ -20,11 +21,13 @@ public class LauncherActivity extends AppCompatActivity {
         Intent nextActivity;
 
         if (firstLaunch) {
-
+            nextActivity = new Intent(LauncherActivity.this, SignupActivity.class);
+            startActivity(nextActivity);
+            finish();
         } else {
             nextActivity = new Intent(LauncherActivity.this, HomeActivity.class);
-
             startActivity(nextActivity);
+            finish();
         }
     }
 }

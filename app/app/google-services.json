@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1055467154898",
+    "project_id": "social-distance-reminder",
+    "storage_bucket": "social-distance-reminder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055467154898:android:9c0a251de9324d831bac0b",
+        "android_client_info": {
+          "package_name": "lk.ac.mrt.cse.cs4472.social_distance_reminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055467154898-v04kd01mg6t3mr31e95kc19k9unmdmed.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lk.ac.mrt.cse.cs4472.social_distance_reminder",
+            "certificate_hash": "933915460d4e02d8ef317d39fc3ad1b899e7c877"
+          }
+        },
+        {
+          "client_id": "1055467154898-1oeplfd7c3k7ro2mdhv6j1vnlcv32oiv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzNz9TVaNian6oyO5avB4N3vBYVii5jUs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055467154898-1oeplfd7c3k7ro2mdhv6j1vnlcv32oiv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
