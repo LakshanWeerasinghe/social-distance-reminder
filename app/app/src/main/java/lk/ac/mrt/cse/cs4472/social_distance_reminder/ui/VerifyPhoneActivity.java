@@ -3,7 +3,6 @@ package lk.ac.mrt.cse.cs4472.social_distance_reminder.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,20 +24,51 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 
 public class VerifyPhoneActivity extends AppCompatActivity {
 
-    private String verificationId;
-    private FirebaseAuth mAuth;
-    private TextInputEditText codeEditText;
+    FirebaseAuth mAuth;
+    String mVerificationId;
+    TextInputEditText codeEditText;
+    String phoneNumber;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verify_phone);
+        setContentView(R.layout.sdr_activity_verify_phone);
 
         mAuth = FirebaseAuth.getInstance();
-        codeEditText = findViewById(R.id.edittext_phone_verify);
-        String phonenumber = getIntent().getStringExtra("phoneNumber");
-        sendVerificationCode(phonenumber);
-        // only when auto detection doesn't work
+        codeEditText = findViewById(R.id.phone_verify_text_input);
+        phoneNumber = getIntent().getStringExtra("phoneNumber");
+
+        mCallBacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            // This callback will be invoked when the incoming verification SMS can be
+            //      automatically detected and perform verification without user action
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                String code = phoneAuthCredential.getSmsCode();
+                if(code != null) {
+                    verifyCode(code);
+                }
+            }
+
+            // This callback will be invoked when an invalid request for verification is made
+            //      (ex. phone number format not correct)
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                Toast.makeText(VerifyPhoneActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            // This callback will be invoked when the SMS verification code has been
+            //      sent to the provided phone number
+            @Override
+            public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(verificationId, forceResendingToken);
+                mVerificationId = verificationId;
+            }
+        };
+
+        startPhoneNumberVerification(phoneNumber);
+
+        // This is needed only when auto detection doesn't work
         findViewById(R.id.phone_verify_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,7 +79,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     }
 
     private void verifyCode(String code) {
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
         signInWithCredential(credential);
     }
 
@@ -69,39 +99,14 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         });
     }
 
-    private void sendVerificationCode(String phoneNumber) {
+    private void startPhoneNumberVerification(String phoneNumber) {
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
                 .setPhoneNumber(phoneNumber)
                 .setTimeout(60L, TimeUnit.SECONDS)
                 .setActivity(VerifyPhoneActivity.this)
-                .setCallbacks(mCallBack)
+                .setCallbacks(mCallBacks)
                 .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
 
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        // called when the code is sent
-        // s has the verification id that is sent by the sms
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-            verificationId = s;
-
-        }
-
-        // in here can get the code that is sent by the sms automatically
-        // if this succeeds user do not need to enter the code manually
-        @Override
-        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-            String code = phoneAuthCredential.getSmsCode();
-            if(code != null) {
-                verifyCode(code);
-            }
-        }
-
-        @Override
-        public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(VerifyPhoneActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    };
 }

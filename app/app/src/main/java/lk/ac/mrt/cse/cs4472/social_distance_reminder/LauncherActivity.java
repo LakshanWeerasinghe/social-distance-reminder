@@ -13,7 +13,6 @@ public class LauncherActivity extends AppCompatActivity {
 
     private final boolean firstLaunch = true;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,12 +21,10 @@ public class LauncherActivity extends AppCompatActivity {
 
         if (firstLaunch) {
             nextActivity = new Intent(LauncherActivity.this, SignupActivity.class);
-            startActivity(nextActivity);
-            finish();
         } else {
             nextActivity = new Intent(LauncherActivity.this, HomeActivity.class);
-            startActivity(nextActivity);
-            finish();
         }
+        startActivity(nextActivity);
+        finish();
     }
 }

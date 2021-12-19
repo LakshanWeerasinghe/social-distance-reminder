@@ -16,23 +16,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Socialdistancereminder">
-        <activity
-            android:name=".ui.VerifyPhoneActivity"
-            android:exported="true" />
+
         <!-- Begin Services -->
         <service
             android:name=".service.BeaconService"
             android:enabled="true"
             android:exported="true" /> <!-- End Service -->
+
         <!-- Begin Activities -->
-        <!-- Home Activity Consist of Dashboard and CovidTracker Fragments -->
+        <!-- Home Activity Consists of Dashboard and CovidTracker Fragments -->
         <activity
             android:name=".ui.HomeActivity"
-            android:label="Home Activity" /> <!-- Launching Activity -->
+            android:label="Home" />
         <activity
             android:name=".ui.SignupActivity"
             android:exported="true"
-            android:label="Signup Activity" />
+            android:label="Signup" />
+        <activity
+            android:name=".ui.VerifyPhoneActivity"
+            android:exported="true"
+            android:label="Verify Phone Number" />
         <activity
             android:name=".LauncherActivity"
             android:exported="true"

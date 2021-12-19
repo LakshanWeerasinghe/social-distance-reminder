@@ -6,18 +6,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-import java.util.HashMap;
-
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.signup.SignupFragment;
-//import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.signup.VerifyPhoneFragment;
 
 public class SignupActivity extends AppCompatActivity implements NavigationHost{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sdc_signup_activity);
+        setContentView(R.layout.sdr_signup_activity);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()
@@ -41,9 +38,4 @@ public class SignupActivity extends AppCompatActivity implements NavigationHost{
         transaction.commit();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
 }
