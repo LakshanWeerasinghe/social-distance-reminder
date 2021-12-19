@@ -16,4 +16,6 @@
     <string name="hint_phone_verify_code">Enter Code</string>
     <string name="button_phone_verify">Verify</string>
     <string name="error_phone_verify">Code not Valid</string>
+    <string name="_0">0</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.dashboard;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,18 +18,26 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.w3c.dom.Text;
 
+import java.util.Map;
+import java.util.Objects;
+
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
 
 public class DashboardFragment extends Fragment {
 
     private static final String TAG = "DashboardFragment";
 
+    private SQLiteRepository sqLiteRepository;
+
     private SwitchMaterial mEnableBeaconServiceSwitch;
 
-    private TextView mLowRiskDetailsTV;
-    private TextView mMildRiskDetailsTV;
-    private Text mHighRiskDetailsTV;
+    private TextView highRiskVal;
+    private TextView mildRiskVal;
+    private TextView lowRiskVal;
 
     private MaterialButton mExposeToCovidBtn;
 
@@ -39,13 +48,17 @@ public class DashboardFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         Log.i(TAG, "begin onCreateView method execution");
 
+        sqLiteRepository = DBHelper.getInstance(getActivity());
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.sdc_dashboard_fragment, container, false);
 
         mEnableBeaconServiceSwitch = view.findViewById(R.id.enable_beacon_service_switch);
         // TODO : set the enabled disabled setting and changed the background color accordingly
 
-        // TODO: complete the below method and initialize risk level texts
+        highRiskVal = view.findViewById(R.id.highRiskVal);
+        mildRiskVal = view.findViewById(R.id.mildRiskVal);
+        lowRiskVal = view.findViewById(R.id.lowRiskVal);
         updateRiskLevelDetails();
 
         mExposeToCovidBtn = view.findViewById(R.id.expose_to_covid);
@@ -73,8 +86,17 @@ public class DashboardFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateRiskLevelDetails(){
-        // TODO : extract the information from the database and show update the cards
+        Map<Integer, Integer> riskLevelDetails =
+                sqLiteRepository.getNumberOfContactsForEachRiskLevel();
+
+        lowRiskVal.setText(Objects.requireNonNull(
+                riskLevelDetails.get(ApplicationConstants.LOW_RISK)).toString());
+        mildRiskVal.setText(Objects.requireNonNull(
+                riskLevelDetails.get(ApplicationConstants.MILD_RISK)).toString());
+        highRiskVal.setText(Objects.requireNonNull(
+                riskLevelDetails.get(ApplicationConstants.HIGH_RISK)).toString());
     }
 
 }
