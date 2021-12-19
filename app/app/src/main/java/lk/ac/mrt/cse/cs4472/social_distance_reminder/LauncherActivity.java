@@ -10,11 +10,11 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActivity;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.SignupActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 
-    private final boolean firstLaunch = false;
-
+    private final boolean firstLaunch = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,11 +29,11 @@ public class LauncherActivity extends AppCompatActivity {
         Intent nextActivity;
 
         if (firstLaunch) {
-
+            nextActivity = new Intent(LauncherActivity.this, SignupActivity.class);
         } else {
             nextActivity = new Intent(LauncherActivity.this, HomeActivity.class);
-
-            startActivity(nextActivity);
         }
+        startActivity(nextActivity);
+        finish();
     }
 }
