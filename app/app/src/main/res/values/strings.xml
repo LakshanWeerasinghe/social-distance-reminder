@@ -10,4 +10,6 @@
     <string name="mild_risk">Mild Risk</string>
     <string name="low_risk">Low Risk</string>
     <string name="expose_to_covid_19">Expose to Covid-19</string>
+    <string name="_0">0</string>
+
 </resources>

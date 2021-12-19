@@ -21,12 +21,16 @@ import org.altbeacon.beacon.Region;
 import java.util.Collections;
 import java.util.UUID;
 
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.notification.CustomNotificationManager;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.BluetoothUtil;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.Util;
 
 public class BeaconService extends Service implements InternalBeaconConsumer {
 
     private static final String TAG = "BeaconService";
+    private static SQLiteRepository sqLiteRepository;
 
     @SuppressLint("StaticFieldLeak")
     private static BeaconService beaconServiceInstance;
@@ -39,20 +43,36 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        sqLiteRepository = DBHelper.getInstance(this);
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "start beacon service");
         super.onStartCommand(intent, flags, startId);
 
+        boolean startBeaconService = intent.getBooleanExtra("enable", true);
 
-        startForeground(Util.getForegroundServiceId(),
-                CustomNotificationManager.createBeaconServiceNotification(
-                        "Social Distance Reminder",
-                        "Background Running...",
-                        getApplicationContext()
-                ));
+        if(startBeaconService){
+            startForeground(Util.getForegroundServiceId(),
+                    CustomNotificationManager.createBeaconServiceNotification(
+                            "Social Distance Reminder",
+                            "Background Running...",
+                            getApplicationContext()
+                    ));
 
-        scanBeacons();
-        transmitBeacons();
+            if(BluetoothUtil.isBluetoothEnabled(this)){
+                scanBeacons();
+                transmitBeacons();
+            }
+        }
+        else {
+            stopForeground(true);
+        }
+
 
         Log.d(TAG, "end of beacon service start command");
         return START_STICKY;
@@ -122,7 +142,11 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
         beaconManager.addRangeNotifier(
                 (beacons, region) -> {
                     for (Beacon beacon : beacons) {
-                        Log.i(TAG, buildBeaconSeeMsg(beacon));
+                        int riskLevel = Util.getRiskLevel(beacon.getDistance());
+                        if(riskLevel != 0){
+                            sqLiteRepository.saveSocialDistancingViolation(
+                                    beacon.getId1().toString(), riskLevel);
+                        }
                     }
                 });
         try {
@@ -132,18 +156,8 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
             beaconManager.startRangingBeacons(new Region("myRangingUniqueId",
                     null, null, null));
         } catch (RemoteException e) {
-
+            Log.e(TAG, e.getMessage());
         }
     }
 
-
-    private String buildBeaconSeeMsg(Beacon beacon){
-        StringBuilder sb = new StringBuilder();
-        sb.append("===================================================\n");
-        sb.append("Beacon Detected ");
-        sb.append("Beacon Id : ").append(beacon.getId1().toString());
-        sb.append(" Distance : ").append(beacon.getDistance());
-        sb.append("===================================================\n");
-        return sb.toString();
-    }
 }

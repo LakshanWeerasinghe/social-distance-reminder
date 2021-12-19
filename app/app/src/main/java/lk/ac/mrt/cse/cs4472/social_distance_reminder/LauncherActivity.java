@@ -6,6 +6,9 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActivity;
 
 public class LauncherActivity extends AppCompatActivity {
@@ -16,6 +19,12 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SQLiteRepository sqLiteRepository = DBHelper.getInstance(this);
+
+        User user = sqLiteRepository.getUserDetails();
+        user.getVerifiedUser();
+
 
         Intent nextActivity;
 

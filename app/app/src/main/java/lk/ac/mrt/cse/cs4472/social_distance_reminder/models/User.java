@@ -1,5 +1,7 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.models;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -8,6 +10,7 @@ public class User implements Serializable {
     private String userName;
     private String fcmToken;
     private String mobileNumber;
+    private Integer verifiedUser;
 
     public String getUserId() {
         return userId;
@@ -41,13 +44,13 @@ public class User implements Serializable {
         this.mobileNumber = mobileNumber;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", fcmToken='" + fcmToken + '\'' +
-                ", mobileNumber='" + mobileNumber + '\'' +
-                '}';
+    public Integer getVerifiedUser() {
+        return verifiedUser;
     }
+
+    public void setVerifiedUser(Integer verifiedUser) {
+        this.verifiedUser = verifiedUser;
+    }
+
+
 }
