@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="lk.ac.mrt.cse.cs4472.social_distance_reminder">
-
-    <!--    Begin Permissions -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <!-- Begin Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!--    End Permissions -->
 
     <application
         android:name=".application.SocialDistanceReminderApplication"
@@ -26,6 +24,11 @@
             android:name=".service.BeaconService"
             android:enabled="true"
             android:exported="true" /> <!-- End Service -->
+        <service android:name=".service.FirebaseCloudMessagingService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"></action>
+            </intent-filter>
+        </service>
 
         <!-- Begin Activities -->
         <!-- Home Activity Consists of Dashboard and CovidTracker Fragments -->
@@ -40,6 +43,10 @@
             android:name=".ui.VerifyPhoneActivity"
             android:exported="true"
             android:label="Verify Phone Number" />
+        <activity
+            android:name=".ui.CovidContactActivity"
+            android:exported="true"
+            android:label="Covid Contact" />
         <activity
             android:name=".LauncherActivity"
             android:exported="true"

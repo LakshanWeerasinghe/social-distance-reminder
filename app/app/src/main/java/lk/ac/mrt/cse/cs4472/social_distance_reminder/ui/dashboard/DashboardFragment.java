@@ -1,6 +1,8 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.dashboard;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,7 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.CovidContactActivity;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
 
 public class DashboardFragment extends Fragment {
@@ -67,7 +70,8 @@ public class DashboardFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                // TODO: go to the Covid Expose Fragment @Nilmani
+                Intent intent = new Intent((Context) getActivity(), CovidContactActivity.class);
+                startActivity(intent);
             }
         });
 

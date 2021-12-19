@@ -14,15 +14,20 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.service.FirebaseCloudMessagingService;
 
 public class VerifyPhoneActivity extends AppCompatActivity {
 
@@ -35,6 +40,9 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
     SQLiteRepository sqLiteRepository;
 
+    FirebaseFirestore database;
+    FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +54,8 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         id = getIntent().getIntExtra("id", -1);
 
         sqLiteRepository = DBHelper.getInstance(this);
+
+        database = FirebaseFirestore.getInstance();
 
         mCallBacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             // This callback will be invoked when the incoming verification SMS can be
@@ -99,6 +109,26 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
                     sqLiteRepository.updateUserDetails(id, phoneNumber,
                             true, false);
+
+                    // add a record in users table
+                    currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    String currentUserUid = currentUser.getUid();
+                    String FCMToken = FirebaseCloudMessagingService.getToken(VerifyPhoneActivity.this);
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("FCM_Token", FCMToken);
+
+                    database.collection("Users").document(currentUserUid).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                sqLiteRepository.updateUserDetails(id, phoneNumber,
+                                        true, true);
+                                Toast.makeText(VerifyPhoneActivity.this, "User Added Successfully", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(VerifyPhoneActivity.this, "User not Added Successfully", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
 
                     Intent nextActivity = new Intent(VerifyPhoneActivity.this, HomeActivity.class);
                     // will clear everything from the stack and start a new activity by closing every other activity
