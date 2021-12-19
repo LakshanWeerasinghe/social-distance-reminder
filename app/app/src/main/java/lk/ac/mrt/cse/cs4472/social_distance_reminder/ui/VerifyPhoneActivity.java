@@ -21,6 +21,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import java.util.concurrent.TimeUnit;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 
 public class VerifyPhoneActivity extends AppCompatActivity {
 
@@ -28,7 +30,10 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     String mVerificationId;
     TextInputEditText codeEditText;
     String phoneNumber;
+    int id;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBacks;
+
+    SQLiteRepository sqLiteRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,9 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         codeEditText = findViewById(R.id.phone_verify_text_input);
         phoneNumber = getIntent().getStringExtra("phoneNumber");
+        id = getIntent().getIntExtra("id", -1);
+
+        sqLiteRepository = DBHelper.getInstance(this);
 
         mCallBacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             // This callback will be invoked when the incoming verification SMS can be
@@ -88,6 +96,10 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
+
+                    sqLiteRepository.updateUserDetails(id, phoneNumber,
+                            true, false);
+
                     Intent nextActivity = new Intent(VerifyPhoneActivity.this, HomeActivity.class);
                     // will clear everything from the stack and start a new activity by closing every other activity
                     nextActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

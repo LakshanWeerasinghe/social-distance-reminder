@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.signup.SignupFragment;
 
 public class SignupActivity extends AppCompatActivity implements NavigationHost{
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

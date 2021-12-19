@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.VerifyPhoneActivity;
 
@@ -40,9 +42,11 @@ public class SignupFragment extends Fragment {
                 } else {
                     phoneNumberEditText.setError(null); // Clear the error
                     phoneNumber = phoneNumberEditText.getText().toString().trim();
+                    int id = requireActivity().getIntent().getIntExtra("id", -1);
 
                     Intent intent = new Intent((Context) getActivity(), VerifyPhoneActivity.class);
                     intent.putExtra("phoneNumber", phoneNumber);
+                    intent.putExtra("id", id);
                     startActivity(intent);
                 }
             }

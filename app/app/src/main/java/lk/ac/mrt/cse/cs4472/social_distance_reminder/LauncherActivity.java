@@ -14,8 +14,6 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.SignupActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 
-    private final boolean firstLaunch = true;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,16 +21,15 @@ public class LauncherActivity extends AppCompatActivity {
         SQLiteRepository sqLiteRepository = DBHelper.getInstance(this);
 
         User user = sqLiteRepository.getUserDetails();
-        user.getVerifiedUser();
-
 
         Intent nextActivity;
 
-        if (firstLaunch) {
+        if (!user.isVerifiedUser()) {
             nextActivity = new Intent(LauncherActivity.this, SignupActivity.class);
         } else {
             nextActivity = new Intent(LauncherActivity.this, HomeActivity.class);
         }
+        nextActivity.putExtra("id", user.getId());
         startActivity(nextActivity);
         finish();
     }

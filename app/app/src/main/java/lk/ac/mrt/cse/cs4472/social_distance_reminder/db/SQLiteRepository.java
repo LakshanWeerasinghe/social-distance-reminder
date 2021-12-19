@@ -24,4 +24,7 @@ public interface SQLiteRepository {
     void updateBeaconEnableConfig(String userId, boolean value);
 
     void initializeTables();
+
+    void updateUserDetails(Integer id, String mobileNumber, Boolean isUserVerified,
+                           Boolean isUserEnabled);
 }

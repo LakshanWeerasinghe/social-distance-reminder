@@ -3,9 +3,14 @@ package lk.ac.mrt.cse.cs4472.social_distance_reminder.application;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
+
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 
 public class SocialDistanceReminderApplication extends Application {
 
@@ -35,6 +40,12 @@ public class SocialDistanceReminderApplication extends Application {
         instance = this;
         this.setAppContext(getApplicationContext());
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        SQLiteRepository sqLiteRepository = DBHelper.getInstance(this);
+        User user = sqLiteRepository.getUserDetails();
+        if(user == null){
+            sqLiteRepository.initializeTables();
+        }
 
         Log.d(TAG, "application creating end");
     }
