@@ -82,7 +82,7 @@ public class CovidContactActivity extends AppCompatActivity {
                 // [{uid="111", risk_level="High", covid_contact_date="34876876487"},{uid="222", risk_level="Medium", covid_contact_date="3423423424"}]
 
                 Map<String, Object> contact1 = new HashMap<>();
-                contact1.put("uid", "111");
+                contact1.put("uid", "luBuyY6haiO1z7iKW9D6LeDmaAy2");
                 contact1.put("risk_level", "High");
                 contact1.put("covid_contact_date", "8979898669");
 
