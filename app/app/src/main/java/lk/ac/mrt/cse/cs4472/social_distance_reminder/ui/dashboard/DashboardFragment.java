@@ -16,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import org.w3c.dom.Text;
-
 import java.util.Map;
 import java.util.Objects;
 
@@ -76,15 +74,16 @@ public class DashboardFragment extends Fragment {
 
         mEnableBeaconServiceSwitch.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean enable) {
-                Log.i(TAG, "user enabled beacon monitoring service " + enable);
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean enable) {
+                        Log.i(TAG, "user enabled beacon monitoring service " + enable);
 
-                // TODO : change the color of the background if user disable the option
+                        // TODO : change the color of the background if user disable the option
 
-                ((HomeActionInterface) requireActivity()).changeBeaconServiceState(enable);
-            }
-        });
+                        ((HomeActionInterface) requireActivity()).changeBeaconServiceState(
+                                userConfig.getId(), enable);
+                    }
+                });
 
         return view;
     }
@@ -100,7 +99,7 @@ public class DashboardFragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    private void updateRiskLevelDetails(){
+    private void updateRiskLevelDetails() {
         Map<Integer, Integer> riskLevelDetails =
                 sqLiteRepository.getNumberOfContactsForEachRiskLevel();
 

@@ -62,12 +62,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost, H
     }
 
     @Override
-    public void changeBeaconServiceState(boolean enable) {
+    public void changeBeaconServiceState(Integer id, Boolean enable) {
         Intent beaconServiceIntent = new Intent(this, BeaconService.class);
         beaconServiceIntent.putExtra("enable", enable);
 
         ContextCompat.startForegroundService(this, beaconServiceIntent);
 
-        sqLiteRepository.updateUserConfig(0, enable, null);
+        sqLiteRepository.updateUserConfig(id, enable, null);
     }
 }

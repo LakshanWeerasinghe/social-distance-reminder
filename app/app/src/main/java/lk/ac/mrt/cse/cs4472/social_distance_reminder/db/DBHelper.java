@@ -115,7 +115,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
         // user configurations
         user_config_table_query = "CREATE TABLE " + USER_CONFIG_TABLE_NAME + " ( " +
-                COL_UCT_ID + " TEXT, " +
+                COL_UCT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_UCT_ENABLE_BEACON_SERVICE + " INTEGER, " +
                 COL_UCT_ENABLE_VIBRATE + " INTEGER) ";
 
@@ -279,7 +279,6 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         Log.d(TAG, "begin updating user config details");
 
         if (id != null){
-            Log.d(TAG, "============================================================");
             ContentValues contentValues = new ContentValues();
             if(enableBeaconService != null){
                 contentValues.put(COL_UCT_ENABLE_BEACON_SERVICE, enableBeaconService ? 1 : 0);
@@ -288,13 +287,11 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
                 contentValues.put(COL_UCT_ENABLE_VIBRATE, enableVibrating ? 1 : 0);
             }
 
-            SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-            Integer updated = sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues,
-                    " " + COL_UCT_ID + " = 0 ", null );
-            Log.d(TAG, updated.toString());
+             SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+             sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues,
+                        " id = ? ", new String[]{id.toString()} );
         }
 
-        Log.d(TAG, getUserConfigs().toString());
         Log.d(TAG, "end updating user config details");
     }
 
