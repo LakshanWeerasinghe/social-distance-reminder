@@ -25,6 +25,7 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
 
 public class DashboardFragment extends Fragment {
@@ -40,6 +41,7 @@ public class DashboardFragment extends Fragment {
     private TextView lowRiskVal;
 
     private MaterialButton mExposeToCovidBtn;
+    private UserConfig userConfig;
 
     @Nullable
     @Override
@@ -54,7 +56,8 @@ public class DashboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.sdc_dashboard_fragment, container, false);
 
         mEnableBeaconServiceSwitch = view.findViewById(R.id.enable_beacon_service_switch);
-        // TODO : set the enabled disabled setting and changed the background color accordingly
+        userConfig = sqLiteRepository.getUserConfigs();
+        mEnableBeaconServiceSwitch.setChecked(userConfig.getEnableBeaconService());
 
         highRiskVal = view.findViewById(R.id.highRiskVal);
         mildRiskVal = view.findViewById(R.id.mildRiskVal);
@@ -84,6 +87,16 @@ public class DashboardFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @SuppressLint("SetTextI18n")
