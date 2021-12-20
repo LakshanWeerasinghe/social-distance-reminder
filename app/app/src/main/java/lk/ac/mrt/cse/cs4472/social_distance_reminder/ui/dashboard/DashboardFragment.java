@@ -18,8 +18,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import org.w3c.dom.Text;
-
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,6 +26,7 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConsta
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.CovidContactActivity;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
 
 public class DashboardFragment extends Fragment {
@@ -43,6 +42,7 @@ public class DashboardFragment extends Fragment {
     private TextView lowRiskVal;
 
     private MaterialButton mExposeToCovidBtn;
+    private UserConfig userConfig;
 
     @Nullable
     @Override
@@ -57,7 +57,8 @@ public class DashboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.sdc_dashboard_fragment, container, false);
 
         mEnableBeaconServiceSwitch = view.findViewById(R.id.enable_beacon_service_switch);
-        // TODO : set the enabled disabled setting and changed the background color accordingly
+        userConfig = sqLiteRepository.getUserConfigs();
+        mEnableBeaconServiceSwitch.setChecked(userConfig.getEnableBeaconService());
 
         highRiskVal = view.findViewById(R.id.highRiskVal);
         mildRiskVal = view.findViewById(R.id.mildRiskVal);
@@ -77,21 +78,32 @@ public class DashboardFragment extends Fragment {
 
         mEnableBeaconServiceSwitch.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean enable) {
-                Log.i(TAG, "user enabled beacon monitoring service " + enable);
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean enable) {
+                        Log.i(TAG, "user enabled beacon monitoring service " + enable);
 
-                // TODO : change the color of the background if user disable the option
+                        // TODO : change the color of the background if user disable the option
 
-                ((HomeActionInterface) requireActivity()).changeBeaconServiceState(enable);
-            }
-        });
+                        ((HomeActionInterface) requireActivity()).changeBeaconServiceState(
+                                userConfig.getId(), enable);
+                    }
+                });
 
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     @SuppressLint("SetTextI18n")
-    private void updateRiskLevelDetails(){
+    private void updateRiskLevelDetails() {
         Map<Integer, Integer> riskLevelDetails =
                 sqLiteRepository.getNumberOfContactsForEachRiskLevel();
 

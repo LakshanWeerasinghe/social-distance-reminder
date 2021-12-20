@@ -16,6 +16,8 @@ import java.util.Map;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.DateTimeUtil;
 
 public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
@@ -113,7 +115,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
         // user configurations
         user_config_table_query = "CREATE TABLE " + USER_CONFIG_TABLE_NAME + " ( " +
-                COL_UCT_ID + " TEXT, " +
+                COL_UCT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_UCT_ENABLE_BEACON_SERVICE + " INTEGER, " +
                 COL_UCT_ENABLE_VIBRATE + " INTEGER) ";
 
@@ -146,7 +148,13 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         Log.d(TAG, "begin saving social distance violation for userId: " + contactedUserId
                 + " riskLevel: " + riskLevel);
 
-        // TODO : write query to save the value in db
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_CTT_CONTACTED_USER_ID, contactedUserId);
+        contentValues.put(COL_CTT_CLASS, riskLevel);
+        contentValues.put(COL_CTT_TIMESTAMP, DateTimeUtil.getCurrentDateTimeStr());
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.insert(CONTACT_TRACKING_TABLE_NAME, null, contentValues);
 
         Log.d(TAG, "end saving social distancing violation");
     }
@@ -177,6 +185,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         return user;
     }
 
+    @SuppressLint("Range")
     @Override
     public Map<Integer, Integer> getNumberOfContactsForEachRiskLevel() {
         Log.d(TAG, "begin to retrieve  risk level details");
@@ -185,6 +194,24 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         riskLevelDetails.put(ApplicationConstants.MILD_RISK, 0);
         riskLevelDetails.put(ApplicationConstants.LOW_RISK, 0);
 
+        String contact_tracking_select_query =  "SELECT COUNT("+ COL_CTT_ID + ") AS CCT_COUNT, "
+                + COL_CTT_CLASS + " FROM " + CONTACT_TRACKING_TABLE_NAME +
+                " GROUP BY " + COL_CTT_ID;
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        @SuppressLint("Recycle")
+        Cursor cursor = sqLiteDatabase.rawQuery(contact_tracking_select_query, null);
+
+        if(cursor.moveToFirst()){
+            do {
+                riskLevelDetails.put(
+                        cursor.getInt(cursor.getColumnIndex("COL_CTT_CLASS")),
+                        cursor.getInt(cursor.getColumnIndex("CCT_COUNT"))
+                );
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
 
         Log.d(TAG, "end of retrieving risk level details");
         return riskLevelDetails;
@@ -212,9 +239,60 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_UCT_ENABLE_BEACON_SERVICE, value ? 1: 0);
-        sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues, userId, null);
+        sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues,
+                "id = ?", new String[]{"1"});
 
         Log.d(TAG, "end updating user beacon enabling config");
+    }
+
+    @SuppressLint("Range")
+    @Override
+    public UserConfig getUserConfigs() {
+        Log.d(TAG, "begin retrieve user configs");
+
+        UserConfig userConfig = null;
+
+        String get_user_config_details = "SELECT * FROM " + USER_CONFIG_TABLE_NAME;
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        @SuppressLint("Recycle")
+        Cursor cursor = sqLiteDatabase.rawQuery(get_user_config_details, null);
+
+        if(cursor.moveToFirst()){
+            userConfig = new UserConfig();
+            userConfig.setId(cursor.getInt(cursor.getColumnIndex(COL_UCT_ID)));
+            userConfig.setEnableBeaconService(cursor.getInt(
+                    cursor.getColumnIndex(COL_UCT_ENABLE_BEACON_SERVICE)) == 1);
+            userConfig.setEnableVibrating(
+                    cursor.getInt(cursor.getColumnIndex(COL_UCT_ENABLE_VIBRATE)) == 1);
+        }
+        cursor.close();
+
+        Log.d(TAG, userConfig.toString());
+
+        Log.d(TAG, "end retrieving user configs");
+        return userConfig;
+    }
+
+    @Override
+    public void updateUserConfig(Integer id, Boolean enableBeaconService, Boolean enableVibrating) {
+        Log.d(TAG, "begin updating user config details");
+
+        if (id != null){
+            ContentValues contentValues = new ContentValues();
+            if(enableBeaconService != null){
+                contentValues.put(COL_UCT_ENABLE_BEACON_SERVICE, enableBeaconService ? 1 : 0);
+            }
+            if(enableVibrating != null){
+                contentValues.put(COL_UCT_ENABLE_VIBRATE, enableVibrating ? 1 : 0);
+            }
+
+             SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+             sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues,
+                        " id = ? ", new String[]{id.toString()} );
+        }
+
+        Log.d(TAG, "end updating user config details");
     }
 
     @Override

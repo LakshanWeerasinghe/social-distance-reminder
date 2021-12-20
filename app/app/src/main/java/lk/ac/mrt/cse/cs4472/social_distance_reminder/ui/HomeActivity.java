@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.service.BeaconService;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.dashboard.DashboardFragment;
 
@@ -19,13 +20,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost, H
 
     private SQLiteRepository sqLiteRepository;
     private String deviceId;
+    private int id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sdc_home_activity);
 
-//        sqLiteRepository = DBHelper.getInstance(this);
+        id = getIntent().getIntExtra("id", -1);
+
+        sqLiteRepository = DBHelper.getInstance(this);
 
         if(savedInstanceState == null){
             getSupportFragmentManager()
@@ -34,8 +38,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost, H
                     .commit();
         }
 
-        // TODO : get beacon service configuration from db
-        changeBeaconServiceState(true);
+        UserConfig userConfig = sqLiteRepository.getUserConfigs();
+        if(userConfig.getEnableBeaconService()){
+            Intent beaconServiceIntent = new Intent(this, BeaconService.class);
+            beaconServiceIntent.putExtra("enable", true);
+
+            ContextCompat.startForegroundService(this, beaconServiceIntent);
+        }
     }
 
     @Override
@@ -53,12 +62,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost, H
     }
 
     @Override
-    public void changeBeaconServiceState(boolean enable) {
+    public void changeBeaconServiceState(Integer id, Boolean enable) {
         Intent beaconServiceIntent = new Intent(this, BeaconService.class);
         beaconServiceIntent.putExtra("enable", enable);
 
         ContextCompat.startForegroundService(this, beaconServiceIntent);
 
-//        sqLiteRepository.updateBeaconEnableConfig(deviceId, enable);
+        sqLiteRepository.updateUserConfig(id, enable, null);
     }
 }

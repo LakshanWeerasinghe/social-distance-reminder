@@ -7,5 +7,5 @@ public interface HomeActionInterface {
      *  use this to stop the beaconService Running in the background
      *
      */
-    void changeBeaconServiceState(boolean enable);
+    void changeBeaconServiceState(Integer id, Boolean enable);
 }
