@@ -21,4 +21,11 @@
     <string name="hint_covid_description">Add a Small Description</string>
     <string name="button_covid_positive">Submit</string>
 
+    <!-- welcome screens -->
+    <string name="about_app_heading">Social Distance Reminder Application</string>
+    <string name="about_app_description">An app which reminds you to keep social distancing while notifying when you have encountered a covid positive patient</string>
+    <string name="bluetooth_heading">This App Requires Bluetooth</string>
+    <string name="bluetooth_description">Please on Bluetooth to get reminded of social distancing</string>
+    <string name="privacy_heading">Your Privacy is Ensured</string>
+    <string name="privacy_description">This app does not track your location</string>
 </resources>

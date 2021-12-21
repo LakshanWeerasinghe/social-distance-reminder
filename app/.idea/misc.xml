@@ -3,7 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Nilmani/Academics/Mobile_Computing_Project/social-distance-reminder/app/app/src/main/res/layout/activity_test.xml" value="0.1796875" />
+        <entry key="..\:/Nilmani/Academics/Mobile_Computing_Project/social-distance-reminder/app/app/src/main/res/layout/sdc_home_activity.xml" value="0.1796875" />
+        <entry key="..\:/Nilmani/Academics/Mobile_Computing_Project/social-distance-reminder/app/app/src/main/res/layout/sdr_about_app_fragment.xml" value="0.16666666666666666" />
+        <entry key="..\:/Nilmani/Academics/Mobile_Computing_Project/social-distance-reminder/app/app/src/main/res/layout/sdr_bluetooth_fragment.xml" value="0.1796875" />
         <entry key="..\:/Nilmani/Academics/Mobile_Computing_Project/social-distance-reminder/app/app/src/main/res/layout/sdr_covid_contact_activity.xml" value="0.1796875" />
+        <entry key="..\:/Nilmani/Academics/Mobile_Computing_Project/social-distance-reminder/app/app/src/main/res/layout/sdr_privacy_fragment.xml" value="0.1796875" />
+        <entry key="..\:/Nilmani/Academics/Mobile_Computing_Project/social-distance-reminder/app/app/src/main/res/layout/sdr_signup_fragment.xml" value="0.1796875" />
         <entry key="..\:/projects/semester_7/social-distance-reminder/app/app/src/main/res/layout/activity_main.xml" value="0.2375" />
         <entry key="..\:/projects/semester_7/social-distance-reminder/app/app/src/main/res/layout/content_main.xml" value="0.2375" />
         <entry key="..\:/projects/semester_7/social-distance-reminder/app/app/src/main/res/layout/fragment_first.xml" value="0.2375" />

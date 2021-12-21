@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.signup.AboutAppFragment;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.signup.SignupFragment;
 
 public class SignupActivity extends AppCompatActivity implements NavigationHost{
@@ -21,7 +22,7 @@ public class SignupActivity extends AppCompatActivity implements NavigationHost{
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.container, new SignupFragment())
+                    .add(R.id.container, new AboutAppFragment())
                     .commit();
         }
     }
