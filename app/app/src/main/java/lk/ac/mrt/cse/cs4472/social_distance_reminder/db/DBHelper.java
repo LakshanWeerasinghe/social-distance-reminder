@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.util.Pair;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +16,14 @@ import java.util.Map;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceContactTracker;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.DateTimeUtil;
 
 public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
     private static final String TAG = "DBHelper";
-    private static DBHelper dbHelper = null;
-
     private final static String DATABASE_NAME = "social.distance.reminder.db";
     private static final int DATABASE_VERSION = 1;
-    private static final int update_time = 10;
 
     // user table
     private static final String USER_TABLE_NAME = "user";
@@ -37,40 +34,38 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
     private static final String COL_UT_FCM = "fcm";
     private static final String COL_UT_MOBILE_NUMBER = "mobile_number";
     private static final String COl_UT_USER_ENABLE = "user_enable";
-
+    private static final String COL_UT_DEVICE_UUID = "device_uuid";
     // contact tracking table
     private static final String CONTACT_TRACKING_TABLE_NAME = "contact_tracking";
     private static final String COL_CTT_ID = "id";
     private static final String COL_CTT_CONTACTED_USER_ID = "contacted_user_id";
     private static final String COL_CTT_TIMESTAMP = "timestamp";
     private static final String COL_CTT_CLASS = "class";
-
     // covid contacted table
     private static final String COVID_CONTACTED_TABLE_NAME = "covid_contacted";
     private static final String COL_CCT_ID = "id";
     private static final String COL_CCT_DATES = "date";
     private static final String COL_CCT_CLASS = "class";
     private static final String COL_CCT_READ_NOTIFICATION = "read_notification";
-
     // covid infected table
     private static final String COVID_INFECTED_TABLE_NAME = "covid_infected";
     private static final String COL_CIT_ID = "id";
     private static final String COL_CIT_DATE = "date";
-
     // user configurations
     private static final String USER_CONFIG_TABLE_NAME = "user_configuration";
     private static final String COL_UCT_ID = "id";
     private static final String COL_UCT_ENABLE_BEACON_SERVICE = "enable_beacon_service";
     private static final String COL_UCT_ENABLE_VIBRATE = "enable_vibrate";
+    private static DBHelper dbHelper = null;
 
     private DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static DBHelper getInstance(Context context){
-        if(dbHelper == null){
-            synchronized (DBHelper.class){
-                if(dbHelper == null){
+    public static DBHelper getInstance(Context context) {
+        if (dbHelper == null) {
+            synchronized (DBHelper.class) {
+                if (dbHelper == null) {
                     dbHelper = new DBHelper(context);
                 }
             }
@@ -86,13 +81,14 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
                 covid_infected_table_query, user_config_table_query;
 
         user_table_query = "CREATE TABLE " + USER_TABLE_NAME + " ( " +
-                            COL_UT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                            COL_UT_USER_ID + " TEXT, " +
-                            COL_UT_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                            COL_UT_VERIFIED + " INTEGER DEFAULT 0, " +
-                            COL_UT_FCM + " TEXT, " +
-                            COL_UT_MOBILE_NUMBER + " TEXT, " +
-                            COl_UT_USER_ENABLE + " INETEGER)";
+                COL_UT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_UT_USER_ID + " TEXT, " +
+                COL_UT_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                COL_UT_VERIFIED + " INTEGER DEFAULT 0, " +
+                COL_UT_FCM + " TEXT, " +
+                COL_UT_MOBILE_NUMBER + " TEXT, " +
+                COL_UT_DEVICE_UUID + " TEXT, " +
+                COl_UT_USER_ENABLE + " INETEGER)";
 
         // contact tracking table
         contact_tracking_table_query = "CREATE TABLE " + CONTACT_TRACKING_TABLE_NAME + " ( " +
@@ -171,19 +167,21 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         @SuppressLint("Recycle")
         Cursor cursor = sqLiteDatabase.rawQuery(get_user_details, null);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             user = new User();
             user.setId(cursor.getInt(cursor.getColumnIndex(COL_UT_ID)));
-            user.setUserId(cursor.getString(cursor.getColumnIndex(COL_UT_USER_ID)));
+            user.setUserUUID(cursor.getString(cursor.getColumnIndex(COL_UT_USER_ID)));
             user.setVerifiedUser(cursor.getInt(cursor.getColumnIndex(COL_UT_VERIFIED)) == 1);
             user.setUserEnabled(cursor.getInt(cursor.getColumnIndex(COl_UT_USER_ENABLE)) == 1);
             user.setMobileNumber(cursor.getString(cursor.getColumnIndex(COL_UT_MOBILE_NUMBER)));
+            user.setDeviceUUID(cursor.getString(cursor.getColumnIndex(COL_UT_DEVICE_UUID)));
         }
         cursor.close();
 
         Log.d(TAG, "end retrieving user details");
         return user;
     }
+
 
     @SuppressLint("Range")
     @Override
@@ -194,18 +192,18 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         riskLevelDetails.put(ApplicationConstants.MILD_RISK, 0);
         riskLevelDetails.put(ApplicationConstants.LOW_RISK, 0);
 
-        String contact_tracking_select_query =  "SELECT COUNT("+ COL_CTT_ID + ") AS CCT_COUNT, "
+        String contact_tracking_select_query = "SELECT COUNT(" + COL_CTT_ID + ") AS CCT_COUNT, "
                 + COL_CTT_CLASS + " FROM " + CONTACT_TRACKING_TABLE_NAME +
-                " GROUP BY " + COL_CTT_ID;
+                " GROUP BY " + COL_CTT_CLASS;
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         @SuppressLint("Recycle")
         Cursor cursor = sqLiteDatabase.rawQuery(contact_tracking_select_query, null);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 riskLevelDetails.put(
-                        cursor.getInt(cursor.getColumnIndex("COL_CTT_CLASS")),
+                        cursor.getInt(cursor.getColumnIndex(COL_CTT_CLASS)),
                         cursor.getInt(cursor.getColumnIndex("CCT_COUNT"))
                 );
             }
@@ -218,18 +216,55 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
     }
 
     @Override
-    public void saveUserDetails() {
-
-    }
-
-    @Override
     public void saveCovidContactedNotificationDetails() {
 
     }
 
     @Override
-    public void getPastContactsDetails() {
+    public List<Map<String, Object>> getCloseContactList(String dateOfPositive) {
+        Log.d(TAG, "begin retrieve close contact list");
 
+        String beginDateTimestamp = "";
+        String endDateTimestamp = "";
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String contacts_selecting_query = "SELECT * FROM " + CONTACT_TRACKING_TABLE_NAME +
+                " WHERE " + COL_CTT_TIMESTAMP + " BETWEEN ? AND ? ";
+
+        Cursor cursor = sqLiteDatabase.rawQuery(contacts_selecting_query,
+                new String[]{beginDateTimestamp, endDateTimestamp});
+
+        Map<String, DeviceContactTracker> deviceContactTrackerMap = new HashMap<>();
+
+        while (cursor.moveToNext()){
+            @SuppressLint("Range")
+            String contactedDeviceUUID = cursor.getString(
+                    cursor.getColumnIndex(COL_CTT_CONTACTED_USER_ID));
+            @SuppressLint("Range")
+            String contactedDate = cursor.getString(cursor.getColumnIndex(COL_CTT_TIMESTAMP));
+            contactedDate = DateTimeUtil.getDateStrFromTimeStamp(contactedDate);
+            @SuppressLint("Range")
+            Integer riskLevel = cursor.getInt(cursor.getColumnIndex(COL_CTT_CLASS));
+
+            DeviceContactTracker deviceContactTracker
+                    = deviceContactTrackerMap.get(contactedDeviceUUID);
+            if(deviceContactTracker != null){
+                deviceContactTracker.addContactedDateAndRiskLevel(
+                        Pair.create(contactedDate, riskLevel)
+                );
+
+            }else {
+                deviceContactTracker =  new DeviceContactTracker(contactedDeviceUUID);
+                deviceContactTracker.addContactedDateAndRiskLevel(
+                        Pair.create(contactedDate, riskLevel)
+                );
+                deviceContactTrackerMap.put(contactedDeviceUUID,
+                        deviceContactTracker);
+            }
+        }
+
+        Log.d(TAG, "end retrieve close contact list");
+        return null;
     }
 
     @Override
@@ -238,7 +273,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_UCT_ENABLE_BEACON_SERVICE, value ? 1: 0);
+        contentValues.put(COL_UCT_ENABLE_BEACON_SERVICE, value ? 1 : 0);
         sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues,
                 "id = ?", new String[]{"1"});
 
@@ -258,7 +293,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         @SuppressLint("Recycle")
         Cursor cursor = sqLiteDatabase.rawQuery(get_user_config_details, null);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             userConfig = new UserConfig();
             userConfig.setId(cursor.getInt(cursor.getColumnIndex(COL_UCT_ID)));
             userConfig.setEnableBeaconService(cursor.getInt(
@@ -278,18 +313,18 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
     public void updateUserConfig(Integer id, Boolean enableBeaconService, Boolean enableVibrating) {
         Log.d(TAG, "begin updating user config details");
 
-        if (id != null){
+        if (id != null) {
             ContentValues contentValues = new ContentValues();
-            if(enableBeaconService != null){
+            if (enableBeaconService != null) {
                 contentValues.put(COL_UCT_ENABLE_BEACON_SERVICE, enableBeaconService ? 1 : 0);
             }
-            if(enableVibrating != null){
+            if (enableVibrating != null) {
                 contentValues.put(COL_UCT_ENABLE_VIBRATE, enableVibrating ? 1 : 0);
             }
 
-             SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-             sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues,
-                        " id = ? ", new String[]{id.toString()} );
+            SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+            sqLiteDatabase.update(USER_CONFIG_TABLE_NAME, contentValues,
+                    " id = ? ", new String[]{id.toString()});
         }
 
         Log.d(TAG, "end updating user config details");
@@ -319,27 +354,36 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
     }
 
     @Override
-    public void updateUserDetails(Integer id, String mobileNumber, Boolean isUserVerified,
-                                  Boolean isUserEnabled) {
+    public void updateUserDetails(User user) {
         Log.d(TAG, "begin updating user details");
-        if (id != -1){
+        if (user.getId() != -1) {
             ContentValues contentValues = new ContentValues();
 
-            if(mobileNumber != null){
-                contentValues.put(COL_UT_MOBILE_NUMBER, mobileNumber);
+            if(user.getUserUUID() != null){
+                contentValues.put(COL_UT_USER_ID, user.getUserUUID());
             }
-            if(isUserVerified != null){
-                contentValues.put(COL_UT_VERIFIED, isUserVerified ? 1 : 0);
+            if (user.getMobileNumber() != null) {
+                contentValues.put(COL_UT_MOBILE_NUMBER, user.getMobileNumber());
             }
-            if(isUserEnabled != null){
-                contentValues.put(COl_UT_USER_ENABLE, isUserEnabled ? 1 : 0);
+            if (user.getVerifiedUser() != null) {
+                contentValues.put(COL_UT_VERIFIED, user.getVerifiedUser() ? 1 : 0);
+            }
+            if (user.getUserEnabled() != null) {
+                contentValues.put(COl_UT_USER_ENABLE, user.getUserEnabled() ? 1 : 0);
+            }
+            if(user.getFcmToken() != null){
+                contentValues.put(COL_UT_FCM, user.getFcmToken());
+            }
+            if(user.getDeviceUUID() != null){
+                contentValues.put(COL_UT_DEVICE_UUID, user.getDeviceUUID());
             }
 
             SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-            sqLiteDatabase.update(USER_TABLE_NAME, contentValues,
-                    " id = ?", new String[]{id.toString()});
+            Integer val = sqLiteDatabase.update(USER_TABLE_NAME, contentValues,
+                    " id = ?", new String[]{user.getId().toString()});
         }
 
         Log.d(TAG, "end updating user details");
     }
+
 }
