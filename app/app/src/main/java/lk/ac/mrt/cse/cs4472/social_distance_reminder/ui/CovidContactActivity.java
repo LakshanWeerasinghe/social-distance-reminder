@@ -21,15 +21,24 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceContactTracker;
 
 public class CovidContactActivity extends AppCompatActivity {
+
+    private static final String TAG = "CovidContactActivity";
 
     Button btn_date_picker;
     TextView text_selected_date;
@@ -42,6 +51,8 @@ public class CovidContactActivity extends AppCompatActivity {
 
     FirebaseFirestore database;
     FirebaseUser currentUser;
+    private SQLiteRepository sqLiteRepository;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +65,7 @@ public class CovidContactActivity extends AppCompatActivity {
         btn_submit = findViewById(R.id.covid_positive_button);
 
         database = FirebaseFirestore.getInstance();
+        sqLiteRepository = DBHelper.getInstance(this);
 
         MaterialDatePicker.Builder builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText("Choose a Date");
@@ -68,7 +80,8 @@ public class CovidContactActivity extends AppCompatActivity {
                     @Override
                     public void onPositiveButtonClick(Object selection) {
                         text_selected_date.setText(materialDatePicker.getHeaderText());
-                        selectedDate = materialDatePicker.getSelection().toString();
+                        selectedDate = Objects.requireNonNull(
+                                materialDatePicker.getSelection()).toString();
                     }
                 });
             }
@@ -78,24 +91,15 @@ public class CovidContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 description = descriptionEditText.getText().toString();
-                // TODO: get the list of covid contacts from Sqlite
-                // [{uid="111", risk_level="High", covid_contact_date="34876876487"},{uid="222", risk_level="Medium", covid_contact_date="3423423424"}]
+                Map<String, DeviceContactTracker> closeContactMap =
+                        sqLiteRepository.getCloseContactList(selectedDate);
 
-                Map<String, Object> contact1 = new HashMap<>();
-                contact1.put("uid", "luBuyY6haiO1z7iKW9D6LeDmaAy2");
-                contact1.put("risk_level", "High");
-                contact1.put("covid_contact_date", "8979898669");
+                List<JSONObject> contactDetails = new ArrayList<>();
+                for (DeviceContactTracker deviceContactTracker: closeContactMap.values()){
+                    contactDetails.add(deviceContactTracker.toJSONObject());
+                }
 
-                Map<String, Object> contact2 = new HashMap<>();
-                contact2.put("uid", "222");
-                contact2.put("risk_level", "Medium");
-                contact2.put("covid_contact_date", "23425435479");
-
-                ArrayList<Map> contacts = new ArrayList<Map>();
-                contacts.add(contact1);
-                contacts.add(contact2);
-
-                addCovidPositiveFirebase(contacts);
+//                addCovidPositiveFirebase(contacts);
             }
         });
 

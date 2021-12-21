@@ -3,6 +3,7 @@ package lk.ac.mrt.cse.cs4472.social_distance_reminder.db;
 import java.util.List;
 import java.util.Map;
 
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceContactTracker;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 
@@ -16,7 +17,7 @@ public interface SQLiteRepository {
 
     void saveCovidContactedNotificationDetails();
 
-    List<Map<String, Object>> getCloseContactList(String dateOfPositive);
+    Map<String, DeviceContactTracker> getCloseContactList(String dateOfPositive);
 
     void updateBeaconEnableConfig(String userId, boolean value);
 

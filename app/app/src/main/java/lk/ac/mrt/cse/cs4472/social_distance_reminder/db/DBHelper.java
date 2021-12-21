@@ -6,9 +6,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.RequiresApi;
+
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +21,7 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConsta
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceContactTracker;
-import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.DateTimeUtil;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.CalendarUtil;
 
 public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
@@ -147,7 +151,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_CTT_CONTACTED_USER_ID, contactedUserId);
         contentValues.put(COL_CTT_CLASS, riskLevel);
-        contentValues.put(COL_CTT_TIMESTAMP, DateTimeUtil.getCurrentDateTimeStr());
+        contentValues.put(COL_CTT_TIMESTAMP, CalendarUtil.getCurrentDateTimeStr());
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.insert(CONTACT_TRACKING_TABLE_NAME, null, contentValues);
@@ -220,16 +224,21 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public List<Map<String, Object>> getCloseContactList(String dateOfPositive) {
+    public Map<String, DeviceContactTracker> getCloseContactList(String dateOfPositive) {
         Log.d(TAG, "begin retrieve close contact list");
+        Timestamp dateOfPositiveTimeStamp = new Timestamp(Long.parseLong(dateOfPositive));
 
-        String beginDateTimestamp = "";
-        String endDateTimestamp = "";
+        String beginDateTimestamp = CalendarUtil.getTimestampBeforeNoOfDays(
+                dateOfPositiveTimeStamp.toString(), 5);
+        String endDateTimestamp = CalendarUtil.getTimestampAfterNoOfDays(
+                dateOfPositiveTimeStamp.toString(), 5);
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         String contacts_selecting_query = "SELECT * FROM " + CONTACT_TRACKING_TABLE_NAME +
-                " WHERE " + COL_CTT_TIMESTAMP + " BETWEEN ? AND ? ";
+                " WHERE " + COL_CTT_TIMESTAMP
+                + " BETWEEN ? AND ? ";
 
         Cursor cursor = sqLiteDatabase.rawQuery(contacts_selecting_query,
                 new String[]{beginDateTimestamp, endDateTimestamp});
@@ -242,7 +251,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
                     cursor.getColumnIndex(COL_CTT_CONTACTED_USER_ID));
             @SuppressLint("Range")
             String contactedDate = cursor.getString(cursor.getColumnIndex(COL_CTT_TIMESTAMP));
-            contactedDate = DateTimeUtil.getDateStrFromTimeStamp(contactedDate);
+            contactedDate = CalendarUtil.getDateStrFromTimeStamp(contactedDate);
             @SuppressLint("Range")
             Integer riskLevel = cursor.getInt(cursor.getColumnIndex(COL_CTT_CLASS));
 
@@ -264,7 +273,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         }
 
         Log.d(TAG, "end retrieve close contact list");
-        return null;
+        return deviceContactTrackerMap;
     }
 
     @Override
