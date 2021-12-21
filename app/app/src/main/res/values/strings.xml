@@ -28,4 +28,8 @@
     <string name="bluetooth_description">Please on Bluetooth to get reminded of social distancing</string>
     <string name="privacy_heading">Your Privacy is Ensured</string>
     <string name="privacy_description">This app does not track your location</string>
+    <string name="signup_heading">Join With the App</string>
+    <string name="signup_description">Register to the application with your phone number</string>
+    <string name="verify_phone_heading">Verify Your Mobile Number</string>
+    <string name="verify_phone_description">Please enter the verification code sent to your mobile number</string>
 </resources>
