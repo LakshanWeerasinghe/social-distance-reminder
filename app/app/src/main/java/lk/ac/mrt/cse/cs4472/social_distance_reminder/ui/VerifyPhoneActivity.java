@@ -27,7 +27,9 @@ import java.util.concurrent.TimeUnit;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.service.FirebaseCloudMessagingService;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.service.HTTPService;
 
 public class VerifyPhoneActivity extends AppCompatActivity {
 
@@ -35,10 +37,11 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     String mVerificationId;
     TextInputEditText codeEditText;
     String phoneNumber;
-    int id;
+    Integer id;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBacks;
 
     SQLiteRepository sqLiteRepository;
+    HTTPService httpService;
 
     FirebaseFirestore database;
     FirebaseUser currentUser;
@@ -54,6 +57,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         id = getIntent().getIntExtra("id", -1);
 
         sqLiteRepository = DBHelper.getInstance(this);
+        httpService = HTTPService.getInstance(this);
 
         database = FirebaseFirestore.getInstance();
 
@@ -107,28 +111,37 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
 
-                    sqLiteRepository.updateUserDetails(id, phoneNumber,
-                            true, false);
+                    User user = new User(id);
+                    user.setMobileNumber(phoneNumber);
+                    user.setVerifiedUser(true);
+                    sqLiteRepository.updateUserDetails(user);
 
                     // add a record in users table
                     currentUser = FirebaseAuth.getInstance().getCurrentUser();
                     String currentUserUid = currentUser.getUid();
                     String FCMToken = FirebaseCloudMessagingService.getToken(VerifyPhoneActivity.this);
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("FCM_Token", FCMToken);
+                    Map<String, String> deviceDetails = new HashMap<>();
+                    deviceDetails.put("fcmToken", FCMToken);
+                    deviceDetails.put("userId", currentUserUid);
 
-                    database.collection("Users").document(currentUserUid).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                sqLiteRepository.updateUserDetails(id, phoneNumber,
-                                        true, true);
-                                Toast.makeText(VerifyPhoneActivity.this, "User Added Successfully", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(VerifyPhoneActivity.this, "User not Added Successfully", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
+                    httpService.postFCMToken("generate-deviceId", deviceDetails,
+                            id.toString(), currentUserUid);
+
+
+
+
+//                    database.collection("Users").document(currentUserUid).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            if (task.isSuccessful()) {
+//                                sqLiteRepository.updateUserDetails(id, currentUserUid, phoneNumber,
+//                                        true, true, FCMToken);
+//                                Toast.makeText(VerifyPhoneActivity.this, "User Added Successfully", Toast.LENGTH_LONG).show();
+//                            } else {
+//                                Toast.makeText(VerifyPhoneActivity.this, "User not Added Successfully", Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//                    });
 
                     Intent nextActivity = new Intent(VerifyPhoneActivity.this, HomeActivity.class);
                     // will clear everything from the stack and start a new activity by closing every other activity

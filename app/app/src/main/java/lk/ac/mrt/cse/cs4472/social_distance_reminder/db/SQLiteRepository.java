@@ -1,5 +1,6 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.db;
 
+import java.util.List;
 import java.util.Map;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
@@ -13,11 +14,9 @@ public interface SQLiteRepository {
 
     Map<Integer, Integer> getNumberOfContactsForEachRiskLevel();
 
-    void saveUserDetails();
-
     void saveCovidContactedNotificationDetails();
 
-    void getPastContactsDetails();
+    List<Map<String, Object>> getCloseContactList(String dateOfPositive);
 
     void updateBeaconEnableConfig(String userId, boolean value);
 
@@ -27,6 +26,5 @@ public interface SQLiteRepository {
 
     void initializeTables();
 
-    void updateUserDetails(Integer id, String mobileNumber, Boolean isUserVerified,
-                           Boolean isUserEnabled);
+    void updateUserDetails(User user);
 }

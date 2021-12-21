@@ -2,6 +2,7 @@ package lk.ac.mrt.cse.cs4472.social_distance_reminder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.SignupActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 
+    private static final String TAG = "LauncherActivity";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +26,8 @@ public class LauncherActivity extends AppCompatActivity {
         User user = sqLiteRepository.getUserDetails();
 
         Intent nextActivity;
-
-        if (!user.isVerifiedUser()) {
+        Log.d(TAG, user.toString());
+        if (!user.getVerifiedUser()) {
             nextActivity = new Intent(LauncherActivity.this, SignupActivity.class);
         } else {
             nextActivity = new Intent(LauncherActivity.this, HomeActivity.class);

@@ -15,4 +15,8 @@ public class DateTimeUtil {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return sdf.format(timestamp);
     }
+
+    public static String getDateStrFromTimeStamp(String timeStampStr){
+        return timeStampStr.split(" ")[0];
+    }
 }

@@ -1,6 +1,5 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.service;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
@@ -21,6 +20,7 @@ import org.altbeacon.beacon.Region;
 import java.util.Collections;
 import java.util.UUID;
 
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.IntentExtrasConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.notification.CustomNotificationManager;
@@ -32,8 +32,6 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
     private static final String TAG = "BeaconService";
     private static SQLiteRepository sqLiteRepository;
 
-    @SuppressLint("StaticFieldLeak")
-    private static BeaconService beaconServiceInstance;
     private BeaconManager beaconManager;
 
     @Nullable
@@ -54,7 +52,8 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
         Log.d(TAG, "start beacon service");
         super.onStartCommand(intent, flags, startId);
 
-        boolean startBeaconService = intent.getBooleanExtra("enable", true);
+        boolean startBeaconService = intent.getBooleanExtra(
+                IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_ENABLE, true);
 
         if(startBeaconService){
             startForeground(Util.getForegroundServiceId(),
@@ -64,9 +63,12 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
                             getApplicationContext()
                     ));
 
+            String userUUID = intent.getStringExtra(
+                    IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_DEVICE_UUID);
+
             if(BluetoothUtil.isBluetoothEnabled(this)){
                 scanBeacons();
-                transmitBeacons();
+                transmitBeacons(userUUID);
             }
         }
         else {
@@ -90,21 +92,19 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
                     .setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT));
             beaconManager.setEnableScheduledScanJobs(false);
             beaconManager.setBackgroundBetweenScanPeriod(0);
-            beaconManager.setBackgroundScanPeriod(60000);
+            beaconManager.setBackgroundScanPeriod(6000);
             beaconManager.bindInternal(this);
         }
 
     }
 
-    private void transmitBeacons() {
+    private void transmitBeacons(String deviceUUID) {
         Log.d(TAG, "start transmitting beacons");
 
-        UUID deviceId =  Util.generateRandomUUID();
-
-        Log.i(TAG, "Device Id "+ deviceId.toString());
+        Log.i(TAG, "DeviceUUID: " + deviceUUID);
 
         Beacon beacon = new Beacon.Builder()
-                .setId1(deviceId.toString())
+                .setId1(deviceUUID)
                 .setId2("1")
                 .setId3("2")
                 .setManufacturer(0x0118)
@@ -125,7 +125,7 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
 
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                Log.i(TAG, "============= Advertisement start succeeded. ===================");
+                Log.i(TAG, "Advertisement start succeeded");
             }
         });
 
@@ -142,16 +142,18 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
         beaconManager.addRangeNotifier(
                 (beacons, region) -> {
                     for (Beacon beacon : beacons) {
+                        Log.i(TAG, "I see a beacon");
                         int riskLevel = Util.getRiskLevel(beacon.getDistance());
                         if(riskLevel != 0){
+                            Log.d(TAG, Integer.valueOf(riskLevel).toString());
                             sqLiteRepository.saveSocialDistancingViolation(
                                     beacon.getId1().toString(), riskLevel);
                         }
                     }
                 });
         try {
-            beaconManager.setForegroundScanPeriod(60000);
-            beaconManager.setForegroundBetweenScanPeriod(60000);
+            beaconManager.setForegroundScanPeriod(6000);
+            beaconManager.setForegroundBetweenScanPeriod(6000);
             beaconManager.updateScanPeriods();
             beaconManager.startRangingBeacons(new Region("myRangingUniqueId",
                     null, null, null));

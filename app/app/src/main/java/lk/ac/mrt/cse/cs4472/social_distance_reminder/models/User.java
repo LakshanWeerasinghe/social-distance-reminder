@@ -4,27 +4,36 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private int id;
-    private String userId;
+    private Integer id;
+    private String userUUID;
     private String fcmToken;
     private String mobileNumber;
-    private boolean verifiedUser;
-    private boolean userEnabled;
+    private Boolean verifiedUser;
+    private Boolean userEnabled;
+    private String deviceUUID;
 
-    public int getId() {
-        return id;
+    public User(){
+
     }
 
-    public void setId(int id) {
+    public User(Integer id){
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUserUUID() {
+        return userUUID;
+    }
+
+    public void setUserUUID(String userUUID) {
+        this.userUUID = userUUID;
     }
 
     public String getFcmToken() {
@@ -43,31 +52,40 @@ public class User implements Serializable {
         this.mobileNumber = mobileNumber;
     }
 
-    public boolean isVerifiedUser() {
+    public Boolean getVerifiedUser() {
         return verifiedUser;
     }
 
-    public void setVerifiedUser(boolean verifiedUser) {
+    public void setVerifiedUser(Boolean verifiedUser) {
         this.verifiedUser = verifiedUser;
     }
 
-    public boolean isUserEnabled() {
+    public Boolean getUserEnabled() {
         return userEnabled;
     }
 
-    public void setUserEnabled(boolean userEnabled) {
+    public void setUserEnabled(Boolean userEnabled) {
         this.userEnabled = userEnabled;
+    }
+
+    public String getDeviceUUID() {
+        return deviceUUID;
+    }
+
+    public void setDeviceUUID(String deviceUUID) {
+        this.deviceUUID = deviceUUID;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userId='" + userId + '\'' +
+                ", userUUID='" + userUUID + '\'' +
                 ", fcmToken='" + fcmToken + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", verifiedUser=" + verifiedUser +
                 ", userEnabled=" + userEnabled +
+                ", deviceUUID='" + deviceUUID + '\'' +
                 '}';
     }
 }

@@ -2,6 +2,7 @@ package lk.ac.mrt.cse.cs4472.social_distance_reminder.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.IntentExtrasConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
@@ -18,16 +20,15 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.dashboard.DashboardFragm
 
 public class HomeActivity extends AppCompatActivity implements NavigationHost, HomeActionInterface{
 
+    private static final String TAG = "HomeActivity";
+
     private SQLiteRepository sqLiteRepository;
-    private String deviceId;
-    private int id;
+    private String deviceUUID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sdc_home_activity);
-
-        id = getIntent().getIntExtra("id", -1);
 
         sqLiteRepository = DBHelper.getInstance(this);
 
@@ -39,9 +40,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost, H
         }
 
         UserConfig userConfig = sqLiteRepository.getUserConfigs();
+        deviceUUID = sqLiteRepository.getUserDetails().getDeviceUUID();
         if(userConfig.getEnableBeaconService()){
             Intent beaconServiceIntent = new Intent(this, BeaconService.class);
-            beaconServiceIntent.putExtra("enable", true);
+            beaconServiceIntent.putExtra(
+                    IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_ENABLE, true);
+            beaconServiceIntent.putExtra(
+                    IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_DEVICE_UUID, deviceUUID);
 
             ContextCompat.startForegroundService(this, beaconServiceIntent);
         }
@@ -64,7 +69,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost, H
     @Override
     public void changeBeaconServiceState(Integer id, Boolean enable) {
         Intent beaconServiceIntent = new Intent(this, BeaconService.class);
-        beaconServiceIntent.putExtra("enable", enable);
+        if(deviceUUID == null){
+            deviceUUID = sqLiteRepository.getUserDetails().getDeviceUUID();
+        }
+
+        beaconServiceIntent.putExtra(
+                IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_ENABLE, enable);
+        beaconServiceIntent.putExtra(
+                IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_DEVICE_UUID, deviceUUID);
 
         ContextCompat.startForegroundService(this, beaconServiceIntent);
 
