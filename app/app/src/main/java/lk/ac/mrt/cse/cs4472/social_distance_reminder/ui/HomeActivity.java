@@ -110,6 +110,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost,
     }
 
     private void startBeaconService(boolean enable){
+        if(deviceUUID == null){
+            deviceUUID = sqLiteRepository.getUserDetails().getDeviceUUID();
+        }
         Intent beaconServiceIntent = new Intent(this, BeaconService.class);
         beaconServiceIntent.putExtra(
                 ArgumentConstants.EXTRA_START_BEACON_SERVICE_ENABLE, enable);
