@@ -1,7 +1,8 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.util;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import android.app.Activity;
+import android.widget.Toast;
+
 import java.util.Random;
 import java.util.UUID;
 
@@ -12,28 +13,32 @@ public class Util {
     private static final Random notificationIdGenerator = new Random();
     private static final Random foregroundServiceIdGenerator = new Random();
 
-    public static int getNotificationId(){
+    public static int getNotificationId() {
         return notificationIdGenerator.nextInt();
     }
 
-    public static int getForegroundServiceId(){
+    public static int getForegroundServiceId() {
         return foregroundServiceIdGenerator.nextInt();
     }
 
-    public static UUID generateRandomUUID(){
+    public static UUID generateRandomUUID() {
         return UUID.randomUUID();
     }
 
-    public static int getRiskLevel(double distance){
-        if(1 >= distance){
+    public static int getRiskLevel(double distance) {
+        if (1 >= distance) {
             return ApplicationConstants.HIGH_RISK;
         }
-        if (3 >= distance){
+        if (3 >= distance) {
             return ApplicationConstants.MILD_RISK;
         }
-        if (5 >= distance){
+        if (5 >= distance) {
             return ApplicationConstants.LOW_RISK;
         }
         return 0;
+    }
+
+    public static void showToast(Activity activity, String msg) {
+        Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
     }
 }

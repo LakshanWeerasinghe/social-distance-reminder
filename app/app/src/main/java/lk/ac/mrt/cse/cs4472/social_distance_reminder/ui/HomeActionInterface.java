@@ -8,4 +8,5 @@ public interface HomeActionInterface {
      *
      */
     void changeBeaconServiceState(Integer id, Boolean enable);
+
 }
