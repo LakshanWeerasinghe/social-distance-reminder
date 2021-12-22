@@ -52,7 +52,7 @@ main.use(bodyParser.json());
 
 //initialize the database and the collection 
 const db = admin.firestore();
-const userDetailsCollection = 'userDetails';
+const userDetailsCollection = 'deviceTracker';
 
 exports.webApi = functions.https.onRequest(main);
 
@@ -61,12 +61,13 @@ app.post('/generate-deviceId', async (req, res) => {
     try {
 
         const deviceUUID = generateUUID.generateUUID();
-        const userId = req.body['userId'];
+
+        const userUUID = req.body['userUUID'];
         const fcmToken = req.body['fcmToken'];
 
         
-        const newDoc = await db.collection(userDetailsCollection).doc(userId).set({
-            deviceUUID,
+        const newDoc = await db.collection(userDetailsCollection).doc(deviceUUID).set({
+            userUUID,
             fcmToken
         });
 
