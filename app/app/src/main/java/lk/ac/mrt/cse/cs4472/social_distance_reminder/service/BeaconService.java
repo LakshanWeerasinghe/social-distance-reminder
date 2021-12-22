@@ -25,10 +25,9 @@ import org.altbeacon.beacon.InternalBeaconConsumer;
 import org.altbeacon.beacon.Region;
 
 import java.util.Collections;
-import java.util.UUID;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
-import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.IntentExtrasConstants;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ArgumentConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.notification.CustomNotificationManager;
@@ -64,7 +63,7 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
         super.onStartCommand(intent, flags, startId);
 
         boolean startBeaconService = intent.getBooleanExtra(
-                IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_ENABLE, true);
+                ArgumentConstants.EXTRA_START_BEACON_SERVICE_ENABLE, true);
 
         if(startBeaconService){
             startForeground(Util.getForegroundServiceId(),
@@ -75,7 +74,7 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
                     ));
 
             String userUUID = intent.getStringExtra(
-                    IntentExtrasConstants.EXTRA_START_BEACON_SERVICE_DEVICE_UUID);
+                    ArgumentConstants.EXTRA_START_BEACON_SERVICE_DEVICE_UUID);
 
             if(BluetoothUtil.isBluetoothEnabled(this)){
                 scanBeacons();

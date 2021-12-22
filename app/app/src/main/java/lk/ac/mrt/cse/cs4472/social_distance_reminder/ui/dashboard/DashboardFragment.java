@@ -23,11 +23,13 @@ import java.util.Objects;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ArgumentConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.CovidContactActivity;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomePermissionHandlerInterface;
 
 public class DashboardFragment extends Fragment {
 
@@ -42,7 +44,12 @@ public class DashboardFragment extends Fragment {
     private TextView lowRiskVal;
 
     private MaterialButton mExposeToCovidBtn;
-    private UserConfig userConfig;
+    Integer userConfigId;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -57,8 +64,16 @@ public class DashboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.sdc_dashboard_fragment, container, false);
 
         mEnableBeaconServiceSwitch = view.findViewById(R.id.enable_beacon_service_switch);
-        userConfig = sqLiteRepository.getUserConfigs();
-        mEnableBeaconServiceSwitch.setChecked(userConfig.getEnableBeaconService());
+
+        Bundle arguments = getArguments();
+        Boolean beaconServiceEnabled = true;
+        if(arguments != null){
+            userConfigId = arguments.getInt(ArgumentConstants.BUNDLE_ARG_USER_CONFIG_ID);
+            beaconServiceEnabled = arguments.getBoolean(
+                    ArgumentConstants.BUNDLE_ARG_ENABLE_BEACON_SERVICE);
+        }
+
+        mEnableBeaconServiceSwitch.setChecked(beaconServiceEnabled);
 
         highRiskVal = view.findViewById(R.id.highRiskVal);
         mildRiskVal = view.findViewById(R.id.mildRiskVal);
@@ -84,8 +99,23 @@ public class DashboardFragment extends Fragment {
 
                         // TODO : change the color of the background if user disable the option
 
-                        ((HomeActionInterface) requireActivity()).changeBeaconServiceState(
-                                userConfig.getId(), enable);
+                        if(enable){
+                            Boolean hasPermissions = ((HomePermissionHandlerInterface)
+                                    requireActivity()).checkPermissionsAndRequest();
+                            Log.i("HAS_PERMISSION", hasPermissions.toString());
+                            if(hasPermissions){
+                                ((HomeActionInterface) requireActivity()).changeBeaconServiceState(
+                                        userConfigId, true);
+                            }
+                            else {
+                                mEnableBeaconServiceSwitch.setChecked(false);
+                            }
+                        }
+                        if(!enable){
+                            ((HomeActionInterface) requireActivity()).changeBeaconServiceState(
+                                    userConfigId, false);
+                        }
+
                     }
                 });
 
