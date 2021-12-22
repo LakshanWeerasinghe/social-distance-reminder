@@ -2,8 +2,12 @@ package lk.ac.mrt.cse.cs4472.social_distance_reminder.application;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -18,6 +22,9 @@ public class SocialDistanceReminderApplication extends Application {
     private static SocialDistanceReminderApplication instance;
     private static Context appContext;
 
+    public static final String HIGH_RISK_CHANNEL = "highRiskChannel";
+    public static final String MILD_RISK_CHANNEL = "mildRiskChannel";
+
     public static SocialDistanceReminderApplication getInstance(){
         return instance;
     }
@@ -30,12 +37,13 @@ public class SocialDistanceReminderApplication extends Application {
         appContext = mAppContext;
     }
 
-
     @SuppressLint("LongLogTag")
     @Override
     public void onCreate() {
         Log.d(TAG, "application creating begin");
         super.onCreate();
+
+        createNotificationChannels();
 
         instance = this;
         this.setAppContext(getApplicationContext());
@@ -48,5 +56,36 @@ public class SocialDistanceReminderApplication extends Application {
         }
 
         Log.d(TAG, "application creating end");
+    }
+
+    private void createNotificationChannels() {
+        // Oreo
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channelHighRisk = new NotificationChannel(
+                    HIGH_RISK_CHANNEL,
+                    "Channel High Risk",
+                    NotificationManager.IMPORTANCE_HIGH // importance level
+            );
+            channelHighRisk.setDescription("Risk High Channel");
+            channelHighRisk.enableVibration(true);
+            channelHighRisk.setVibrationPattern(new long[] { 1000, 1000, 1000, 1000, 1000 });
+            channelHighRisk.enableLights(true);
+            channelHighRisk.setLightColor(Color.RED);
+
+            NotificationChannel channelMildRisk = new NotificationChannel(
+                    MILD_RISK_CHANNEL,
+                    "Channel Mild Risk",
+                    NotificationManager.IMPORTANCE_LOW // importance level
+            );
+            channelMildRisk.setDescription("Risk Mild Channel");
+            channelMildRisk.setSound(null, null);
+            channelHighRisk.enableVibration(false);
+            channelHighRisk.setVibrationPattern(null);
+            channelHighRisk.enableLights(false);
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channelHighRisk);
+            manager.createNotificationChannel(channelMildRisk);
+        }
     }
 }
