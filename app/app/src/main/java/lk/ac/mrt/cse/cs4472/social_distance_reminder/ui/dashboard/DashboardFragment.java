@@ -31,6 +31,7 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.CovidContactActivity;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomePermissionHandlerInterface;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.NotificationActivity;
 
 public class DashboardFragment extends Fragment {
 
@@ -100,14 +101,16 @@ public class DashboardFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.app_bar_notifications) {
-                    Log.d("MENU", "notifications clicked");
+                    Intent intent = new Intent((Context) getActivity(), NotificationActivity.class);
+                    startActivity(intent);
                     return true;
                 } else if (menuItem.getItemId() == R.id.app_bar_covid_contact) {
-//                    Intent intent = new Intent((Context) getActivity(), CovidContactActivity.class);
-//                    startActivity(intent);
+                    Intent intent = new Intent((Context) getActivity(), CovidContactActivity.class);
+                    startActivity(intent);
                     return true;
+                } else {
+                    return false;
                 }
-                return false;
             }
         });
 

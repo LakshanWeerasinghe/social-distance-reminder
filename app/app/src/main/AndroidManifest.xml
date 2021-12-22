@@ -21,6 +21,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Socialdistancereminder">
+        <activity
+            android:name=".ui.NotificationActivity"
+            android:exported="true" />
         <!-- Begin Services -->
         <service
             android:name=".service.BeaconService"

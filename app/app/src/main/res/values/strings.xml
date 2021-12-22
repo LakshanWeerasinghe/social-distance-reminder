@@ -17,7 +17,7 @@
     <string name="button_phone_verify">Verify</string>
     <string name="error_phone_verify">Code not Valid</string>
     <string name="_0">0</string>
-    <string name="button_date_pick">Pick a Date</string>
+    <string name="button_date_pick">Select the Date You Tested Positive</string>
     <string name="hint_covid_description">Add a Small Description</string>
     <string name="button_covid_positive">Submit</string>
 
@@ -32,6 +32,10 @@
     <string name="signup_description">Register to the application with your phone number</string>
     <string name="verify_phone_heading">Verify Your Mobile Number</string>
     <string name="verify_phone_description">Please enter the verification code sent to your mobile number</string>
+
+    <!-- other screens -->
+    <string name="covid_positive_heading">Are You Tested Positive for Covid?</string>
+    <string name="covid_positive_content">Notify others to stop the virus from spreading further</string>
 
     <!-- App bar -->
     <string name="notifications">Notifications</string>
