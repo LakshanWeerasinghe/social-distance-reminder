@@ -170,5 +170,18 @@
             android:text="@string/expose_to_covid_19"
             app:iconTint="#C6FF00" />
         <!--    End Button about exposed to Covid-19-->
+
+        <!--    Begin Button about exposed to Covid-19-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/language_toggle"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:background="#DE1111"
+            android:minHeight="50dp"
+            android:text="Toggle Lang"
+            app:iconTint="#C6FF00" />
+        <!--    End Button about exposed to Covid-19-->
     </LinearLayout>
 </ScrollView>
