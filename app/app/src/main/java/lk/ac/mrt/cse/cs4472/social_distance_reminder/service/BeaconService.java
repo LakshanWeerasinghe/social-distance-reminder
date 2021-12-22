@@ -55,17 +55,19 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
                 ArgumentConstants.EXTRA_START_BEACON_SERVICE_ENABLE, true);
 
         if(startBeaconService){
-            startForeground(Util.getForegroundServiceId(),
-                    CustomNotificationManager.createBeaconServiceNotification(
-                            "Social Distance Reminder",
-                            "Background Running...",
-                            getApplicationContext()
-                    ));
-
-            String userUUID = intent.getStringExtra(
-                    ArgumentConstants.EXTRA_START_BEACON_SERVICE_DEVICE_UUID);
 
             if(BluetoothUtil.isBluetoothEnabled(this)){
+                startForeground(Util.getForegroundServiceId(),
+                        CustomNotificationManager.createBeaconServiceNotification(
+                                "Social Distance Reminder",
+                                "Background Running...",
+                                getApplicationContext()
+                        ));
+
+                String userUUID = intent.getStringExtra(
+                        ArgumentConstants.EXTRA_START_BEACON_SERVICE_DEVICE_UUID);
+
+
                 scanBeacons();
                 transmitBeacons(userUUID);
             }

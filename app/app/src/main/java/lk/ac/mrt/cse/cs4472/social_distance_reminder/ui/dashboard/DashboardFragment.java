@@ -100,9 +100,8 @@ public class DashboardFragment extends Fragment {
                         // TODO : change the color of the background if user disable the option
 
                         if(enable){
-                            Boolean hasPermissions = ((HomePermissionHandlerInterface)
+                            boolean hasPermissions = ((HomePermissionHandlerInterface)
                                     requireActivity()).checkPermissionsAndRequest();
-                            Log.i("HAS_PERMISSION", hasPermissions.toString());
                             if(hasPermissions){
                                 ((HomeActionInterface) requireActivity()).changeBeaconServiceState(
                                         userConfigId, true);

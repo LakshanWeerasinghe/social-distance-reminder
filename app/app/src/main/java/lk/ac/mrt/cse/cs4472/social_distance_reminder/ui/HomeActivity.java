@@ -178,11 +178,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationHost,
 
     @Override
     public boolean checkPermissionsAndRequest() {
-        Boolean isBluetoothPermissionGranted = checkPermission(Manifest.permission.BLUETOOTH);
-        Boolean isLocationPermissionGranted = checkPermission(
+        boolean isBluetoothPermissionGranted = checkPermission(Manifest.permission.BLUETOOTH);
+        boolean isLocationPermissionGranted = checkPermission(
                 Manifest.permission.ACCESS_FINE_LOCATION);
-        Log.i("BLUETOOTH", isBluetoothPermissionGranted.toString());
-        Log.i("LOCATION", isLocationPermissionGranted.toString());
+
         if(!isBluetoothPermissionGranted || !isLocationPermissionGranted){
             if (!isBluetoothPermissionGranted) {
                 requestPermission(Manifest.permission.BLUETOOTH, PERMISSION_BLUETOOTH_REQUEST_CODE);

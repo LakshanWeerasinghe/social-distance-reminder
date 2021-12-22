@@ -122,7 +122,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                     String FCMToken = FirebaseCloudMessagingService.getToken(VerifyPhoneActivity.this);
                     Map<String, String> deviceDetails = new HashMap<>();
                     deviceDetails.put("fcmToken", FCMToken);
-                    deviceDetails.put("userId", currentUserUid);
+                    deviceDetails.put("userUUID", currentUserUid);
 
                     httpService.postFCMToken("generate-deviceId", deviceDetails,
                             id.toString(), currentUserUid);
