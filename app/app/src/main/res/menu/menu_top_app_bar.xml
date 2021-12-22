@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/app_bar_notifications"
+        android:icon="@drawable/notifications"
+        android:title="@string/notifications"
+        android:contentDescription="@string/notifications_content"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/app_bar_covid_contact"
+        android:icon="@drawable/covid_contact"
+        android:title="@string/covid_contact"
+        android:contentDescription="@string/covid_contact_content"
+        app:showAsAction="ifRoom" />
+</menu>

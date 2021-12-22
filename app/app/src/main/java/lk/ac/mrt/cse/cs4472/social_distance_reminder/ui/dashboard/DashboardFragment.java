@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
@@ -27,7 +29,6 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ArgumentConstants
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.CovidContactActivity;
-import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomePermissionHandlerInterface;
 
@@ -42,8 +43,10 @@ public class DashboardFragment extends Fragment {
     private TextView highRiskVal;
     private TextView mildRiskVal;
     private TextView lowRiskVal;
+    private Toolbar appBar;
 
-    private MaterialButton mExposeToCovidBtn;
+//    private MaterialButton mExposeToCovidBtn;
+
     Integer userConfigId;
 
     @Override
@@ -80,14 +83,31 @@ public class DashboardFragment extends Fragment {
         lowRiskVal = view.findViewById(R.id.lowRiskVal);
         updateRiskLevelDetails();
 
-        mExposeToCovidBtn = view.findViewById(R.id.expose_to_covid);
+//        mExposeToCovidBtn = view.findViewById(R.id.expose_to_covid);
+//
+//        mExposeToCovidBtn.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent((Context) getActivity(), CovidContactActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
-        mExposeToCovidBtn.setOnClickListener(new View.OnClickListener() {
+        appBar = view.findViewById(R.id.app_bar);
 
+        appBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent((Context) getActivity(), CovidContactActivity.class);
-                startActivity(intent);
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.app_bar_notifications) {
+                    Log.d("MENU", "notifications clicked");
+                    return true;
+                } else if (menuItem.getItemId() == R.id.app_bar_covid_contact) {
+//                    Intent intent = new Intent((Context) getActivity(), CovidContactActivity.class);
+//                    startActivity(intent);
+                    return true;
+                }
+                return false;
             }
         });
 

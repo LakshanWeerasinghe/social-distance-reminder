@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
 
-    <string name="enable_notification">Enable Notification</string>
+    <string name="enable_notification">Get alerted when you are closer to someone</string>
     <string name="enable">Enable</string>
     <string name="social_distance_reminder">Social Distance Reminder</string>
     <string name="high_risk">High Risk</string>
@@ -32,4 +32,10 @@
     <string name="signup_description">Register to the application with your phone number</string>
     <string name="verify_phone_heading">Verify Your Mobile Number</string>
     <string name="verify_phone_description">Please enter the verification code sent to your mobile number</string>
+
+    <!-- App bar -->
+    <string name="notifications">Notifications</string>
+    <string name="notifications_content">Notifications from Covid Contacts</string>
+    <string name="covid_contact">Covid Contact</string>
+    <string name="covid_contact_content">Mark if tested positive for Covid</string>
 </resources>

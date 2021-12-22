@@ -9,15 +9,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Social Distance Reminder"
+                app:menu="@menu/menu_top_app_bar"/>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!--    Begin Card View of Beacon Service Enabling -->
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_marginTop="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginLeft="18dp"
+            app:cardElevation="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,30 +45,32 @@
                     android:layout_height="194dp"
                     android:contentDescription="@string/social_distance_reminder"
                     android:scaleType="fitXY"
-                    android:src="@drawable/img" />
+                    android:src="@drawable/dashboard" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#00E676"
+                    android:background="@color/colorPrimaryLight"
                     android:orientation="vertical"
                     android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_marginTop="16dp"
                         android:text="@string/enable_notification"
                         android:textAppearance="?attr/textAppearanceBody2"
-                        android:textColor="#1B5E20" />
+                        android:textColor="@color/tab_indicator_gray" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/enable_beacon_service_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="right"
-                        android:checked="false"
+                        android:layout_gravity="center"
+                        android:checked="true"
                         android:text="@string/enable"
+                        android:textColor="@color/tab_indicator_gray"
                         android:textColorLink="#981E1E"
                         tools:ignore="RtlHardcoded" />
                 </LinearLayout>
@@ -63,112 +80,167 @@
         <!--    End Card View of Beacon Service Enabling -->
 
         <!--    Begin Card View of the Risk Level Details -->
+        <!--    End Card View of the Risk Level Details -->
+
+        <!--    Begin Button about exposed to Covid-19-->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_margin="18dp"
+            app:cardBackgroundColor="@color/colorPrimaryLight"
+            app:cardCornerRadius="3dp"
+            app:cardElevation="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="15dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="fill_parent"
-                    android:layout_height="200dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
                     android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#8BC34A">
+                    android:text="Encounters"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@color/tab_indicator_gray"
+                    android:textSize="20dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:fontFamily="monospace"
-                        android:gravity="center"
-                        android:text="@string/low_risk"
-                        android:textAllCaps="false"
-                        android:textAppearance="?attr/textAppearanceBody2"
-                        android:textColor="#004D40"
-                        android:textSize="14sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="3"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
 
-                    <TextView
-                        android:id="@+id/lowRiskVal"
-                        android:textSize="30sp"
-                        android:textAlignment="center"
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_0" />
-                </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="fill_parent"
+                        android:layout_height="130dp"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="#6ec7b5">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="fill_parent"
-                    android:layout_height="200dp"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#FFEB3B">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:fontFamily="monospace"
-                        android:gravity="center"
-                        android:text="@string/mild_risk"
-                        android:textAppearance="?attr/textAppearanceBody2"
-                        android:textColor="#33691E" />
-                    <TextView
-                        android:id="@+id/mildRiskVal"
-                        android:textSize="30sp"
-                        android:textAlignment="center"
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_0" />
-                </com.google.android.material.card.MaterialCardView>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:fontFamily="monospace"
+                                android:gravity="center"
+                                android:text="@string/low_risk"
+                                android:textAllCaps="false"
+                                android:textAppearance="?attr/textAppearanceBody2"
+                                android:textColor="#004D40"
+                                android:textSize="14sp" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="fill_parent"
-                    android:layout_height="200dp"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#D32F2F">
+                            <TextView
+                                android:id="@+id/lowRiskVal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/_0"
+                                android:textAlignment="center"
+                                android:textSize="30sp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:fontFamily="monospace"
-                        android:gravity="center"
-                        android:text="@string/high_risk"
-                        android:textAppearance="?attr/textAppearanceBody2"
-                        android:textColor="#FFF3E0" />
-                    <TextView
-                        android:id="@+id/highRiskVal"
-                        android:textSize="30sp"
-                        android:textAlignment="center"
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/_0" />
-                </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="fill_parent"
+                        android:layout_height="130dp"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="#fcc66d">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:fontFamily="monospace"
+                                android:gravity="center"
+                                android:text="@string/mild_risk"
+                                android:textAppearance="?attr/textAppearanceBody2"
+                                android:textColor="#33691E" />
+
+                            <TextView
+                                android:id="@+id/mildRiskVal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/_0"
+                                android:textAlignment="center"
+                                android:textSize="30sp" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="fill_parent"
+                        android:layout_height="130dp"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="#f47e5a">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:fontFamily="monospace"
+                                android:gravity="center"
+                                android:text="@string/high_risk"
+                                android:textAppearance="?attr/textAppearanceBody2"
+                                android:textColor="#FFF3E0" />
+
+                            <TextView
+                                android:id="@+id/highRiskVal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/_0"
+                                android:textAlignment="center"
+                                android:textSize="30sp" />
+
+                        </LinearLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-        <!--    End Card View of the Risk Level Details -->
 
-        <!--    Begin Button about exposed to Covid-19-->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/expose_to_covid"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
-            android:background="#DE1111"
-            android:minHeight="50dp"
-            android:text="@string/expose_to_covid_19"
-            app:iconTint="#C6FF00" />
+        </com.google.android.material.card.MaterialCardView>
+
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/expose_to_covid"-->
+<!--            style="@style/Widget.MaterialComponents.Button.TextButton"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="30dp"-->
+<!--            android:background="#DE1111"-->
+<!--            android:minHeight="50dp"-->
+<!--            android:text="@string/expose_to_covid_19"-->
+<!--            app:iconTint="#C6FF00" />-->
         <!--    End Button about exposed to Covid-19-->
     </LinearLayout>
 </ScrollView>

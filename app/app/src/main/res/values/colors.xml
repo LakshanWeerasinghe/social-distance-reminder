@@ -10,6 +10,8 @@
 
     <color name="colorPrimary">#55ab55</color>
     <color name="colorPrimaryDark">#448844</color>
+    <color name="colorPrimaryLight2">#aad5aa</color>
+    <color name="colorPrimaryLight">#eef6ee</color>
     <color name="colorAccent">#ffffff</color>
 
     <!-- colors for buttons -->
@@ -18,8 +20,8 @@
     <color name="gradient_end_color">#18a3fe</color>
 
     <!-- colors for tabs and screen text -->
-    <color name="tab_indicator_gray">#c0c0c0</color>
+    <color name="tab_indicator_gray">#505050</color>
     <color name="intro_title_color">#000000</color>
     <color name="intro_description_color">#656565</color>
-
+    <color name="app_background_color">#efefef</color>
 </resources>
