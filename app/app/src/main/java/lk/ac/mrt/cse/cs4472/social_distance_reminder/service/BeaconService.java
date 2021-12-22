@@ -1,14 +1,21 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.service;
 
+import static lk.ac.mrt.cse.cs4472.social_distance_reminder.application.SocialDistanceReminderApplication.HIGH_RISK_CHANNEL;
+import static lk.ac.mrt.cse.cs4472.social_distance_reminder.application.SocialDistanceReminderApplication.MILD_RISK_CHANNEL;
+
+import android.app.Notification;
 import android.app.Service;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
@@ -20,6 +27,7 @@ import org.altbeacon.beacon.Region;
 import java.util.Collections;
 import java.util.UUID;
 
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.IntentExtrasConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
@@ -34,6 +42,8 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
 
     private BeaconManager beaconManager;
 
+    private NotificationManagerCompat notificationManager;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -45,6 +55,7 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
         super.onCreate();
 
         sqLiteRepository = DBHelper.getInstance(this);
+        notificationManager = NotificationManagerCompat.from(this);
     }
 
     @Override
@@ -148,6 +159,18 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
                             Log.d(TAG, Integer.valueOf(riskLevel).toString());
                             sqLiteRepository.saveSocialDistancingViolation(
                                     beacon.getId1().toString(), riskLevel);
+                            if (riskLevel == 1) {
+                                // high risk
+                                Log.d("RISK", "high risk");
+                                sendOnHighRiskChannel();
+                            } else if (riskLevel == 2) {
+                                // mild risk
+                                Log.d("RISK", "mild risk");
+                                sendOnMildRiskChannel();
+                            } else {
+                                // low risk
+                                Log.d("RISK", "low risk");
+                            }
                         }
                     }
                 });
@@ -160,6 +183,28 @@ public class BeaconService extends Service implements InternalBeaconConsumer {
         } catch (RemoteException e) {
             Log.e(TAG, e.getMessage());
         }
+    }
+
+    private void sendOnHighRiskChannel() {
+        Notification notification = new NotificationCompat.Builder(this, HIGH_RISK_CHANNEL)
+                .setSmallIcon(R.drawable.bluetooth)
+                .setContentTitle("HIGH RISK")
+                .setContentText("Move to a less crowded place")
+                .setPriority(NotificationCompat.PRIORITY_HIGH) // have this if you support android version less than Oreo
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+        notificationManager.notify(1500, notification);
+    }
+
+    private void sendOnMildRiskChannel() {
+        Notification notification = new NotificationCompat.Builder(this, MILD_RISK_CHANNEL)
+                .setSmallIcon(R.drawable.bluetooth)
+                .setContentTitle("MILD RISK")
+                .setContentText("Move to a less crowded place")
+                .setPriority(NotificationCompat.PRIORITY_LOW) // have this if you support android version less than Oreo
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+        notificationManager.notify(1500, notification);
     }
 
 }
