@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -69,6 +71,7 @@ public class CovidContactActivity extends AppCompatActivity {
 
         MaterialDatePicker.Builder builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText("Choose a Date");
+        builder.setCalendarConstraints(limitFuture().build());
 
         MaterialDatePicker materialDatePicker = builder.build();
 
@@ -105,6 +108,11 @@ public class CovidContactActivity extends AppCompatActivity {
 
     }
 
+    private CalendarConstraints.Builder limitFuture() {
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder().setValidator(DateValidatorPointBackward.now());
+        return constraintsBuilder;
+    }
+    
     private void addCovidPositiveFirebase(ArrayList<Map> contacts) {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUserUid = currentUser.getUid();
