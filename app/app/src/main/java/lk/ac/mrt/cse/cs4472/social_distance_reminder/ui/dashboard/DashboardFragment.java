@@ -28,6 +28,7 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConsta
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ArgumentConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.service.LocalizationService;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.CovidContactActivity;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomeActionInterface;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.ui.HomePermissionHandlerInterface;
@@ -47,8 +48,10 @@ public class DashboardFragment extends Fragment {
     private Toolbar appBar;
 
 //    private MaterialButton mExposeToCovidBtn;
-
+    private MaterialButton mToggleLang;
     Integer userConfigId;
+
+    private String lang = "en";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,6 +114,21 @@ public class DashboardFragment extends Fragment {
                 } else {
                     return false;
                 }
+            }
+        });
+
+        mToggleLang = view.findViewById(R.id.language_toggle);
+
+        mToggleLang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(lang.equals("en")){
+                    lang = "si";
+                }else {
+                    lang = "en";
+                }
+                Log.i(TAG, lang);
+                LocalizationService.setLocale(getActivity(), lang);
             }
         });
 
