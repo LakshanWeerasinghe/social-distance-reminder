@@ -97,12 +97,18 @@ public class CovidContactActivity extends AppCompatActivity {
                 Map<String, DeviceContactTracker> closeContactMap =
                         sqLiteRepository.getCloseContactList(selectedDate);
 
+                if (closeContactMap.values().isEmpty()) {
+                    Log.d("CONTACTS", "empty");
+                } else {
+                    Log.d("CONTACTS", "not empty");
+                }
+
                 List<JSONObject> contactDetails = new ArrayList<>();
                 for (DeviceContactTracker deviceContactTracker: closeContactMap.values()){
                     contactDetails.add(deviceContactTracker.toJSONObject());
                 }
 
-//                addCovidPositiveFirebase(contacts);
+                addCovidPositiveFirebase(contactDetails);
             }
         });
 
@@ -113,7 +119,7 @@ public class CovidContactActivity extends AppCompatActivity {
         return constraintsBuilder;
     }
     
-    private void addCovidPositiveFirebase(ArrayList<Map> contacts) {
+    private void addCovidPositiveFirebase(List<JSONObject> contacts) {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUserUid = currentUser.getUid();
 
