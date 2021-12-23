@@ -8,19 +8,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.RequiresApi;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceTrackerModel;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
-import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceContactTracker;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.CalendarUtil;
 
 public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
@@ -226,7 +226,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public Map<String, DeviceContactTracker> getCloseContactList(String dateOfPositive) {
+    public List<DeviceTrackerModel> getCloseContactList(String dateOfPositive) {
         Log.d(TAG, "begin retrieve close contact list");
         Timestamp dateOfPositiveTimeStamp = new Timestamp(Long.parseLong(dateOfPositive));
 
@@ -243,7 +243,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         Cursor cursor = sqLiteDatabase.rawQuery(contacts_selecting_query,
                 new String[]{beginDateTimestamp, endDateTimestamp});
 
-        Map<String, DeviceContactTracker> deviceContactTrackerMap = new HashMap<>();
+        Map<String, DeviceTrackerModel> deviceTrackerModelMap = new HashMap<>();
 
         while (cursor.moveToNext()){
             @SuppressLint("Range")
@@ -255,25 +255,23 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
             @SuppressLint("Range")
             Integer riskLevel = cursor.getInt(cursor.getColumnIndex(COL_CTT_CLASS));
 
-            DeviceContactTracker deviceContactTracker
-                    = deviceContactTrackerMap.get(contactedDeviceUUID);
-            if(deviceContactTracker != null){
-                deviceContactTracker.addContactedDateAndRiskLevel(
-                        Pair.create(contactedDate, riskLevel)
-                );
+            DeviceTrackerModel deviceTrackerModel
+                    = deviceTrackerModelMap.get(contactedDeviceUUID);
+            if(deviceTrackerModel != null){
+                deviceTrackerModel.setRiskLevel(riskLevel);
+                deviceTrackerModel.addDate(contactedDate);
 
             }else {
-                deviceContactTracker =  new DeviceContactTracker(contactedDeviceUUID);
-                deviceContactTracker.addContactedDateAndRiskLevel(
-                        Pair.create(contactedDate, riskLevel)
-                );
-                deviceContactTrackerMap.put(contactedDeviceUUID,
-                        deviceContactTracker);
+                deviceTrackerModel =  new DeviceTrackerModel(contactedDeviceUUID);
+                deviceTrackerModel.setRiskLevel(riskLevel);
+                deviceTrackerModel.addDate(contactedDate);
+                deviceTrackerModelMap.put(contactedDeviceUUID,
+                        deviceTrackerModel);
             }
         }
 
         Log.d(TAG, "end retrieve close contact list");
-        return deviceContactTrackerMap;
+        return new ArrayList<>(deviceTrackerModelMap.values());
     }
 
     @Override

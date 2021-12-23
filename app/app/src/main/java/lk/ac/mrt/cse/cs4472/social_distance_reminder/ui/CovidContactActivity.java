@@ -18,25 +18,19 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
-import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceContactTracker;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceTrackerModel;
 
 public class CovidContactActivity extends AppCompatActivity {
 
@@ -94,19 +88,8 @@ public class CovidContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 description = descriptionEditText.getText().toString();
-                Map<String, DeviceContactTracker> closeContactMap =
+                List<DeviceTrackerModel> contactDetails =
                         sqLiteRepository.getCloseContactList(selectedDate);
-
-                if (closeContactMap.values().isEmpty()) {
-                    Log.d("CONTACTS", "empty");
-                } else {
-                    Log.d("CONTACTS", "not empty");
-                }
-
-                List<JSONObject> contactDetails = new ArrayList<>();
-                for (DeviceContactTracker deviceContactTracker: closeContactMap.values()){
-                    contactDetails.add(deviceContactTracker.toJSONObject());
-                }
 
                 addCovidPositiveFirebase(contactDetails);
             }
@@ -119,12 +102,11 @@ public class CovidContactActivity extends AppCompatActivity {
         return constraintsBuilder;
     }
     
-    private void addCovidPositiveFirebase(List<JSONObject> contacts) {
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String currentUserUid = currentUser.getUid();
+    private void addCovidPositiveFirebase(List<DeviceTrackerModel> contacts) {
+        String currentUserUUID = sqLiteRepository.getUserDetails().getUserUUID();
 
         Map<String, Object> covidContactDetails = new HashMap<>();
-        covidContactDetails.put("user_id", currentUserUid);
+        covidContactDetails.put("user_id", currentUserUUID);
         covidContactDetails.put("message", description);
         covidContactDetails.put("covid_positive_date", selectedDate);
         covidContactDetails.put("contacts", contacts);
