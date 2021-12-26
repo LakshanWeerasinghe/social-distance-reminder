@@ -4,12 +4,12 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
 
-    <string name="enable_notification">Enable Notification</string>
+    <string name="enable_notification">Get alerted when you are closer to someone</string>
     <string name="enable">Enable</string>
     <string name="social_distance_reminder">Social Distance Reminder</string>
-    <string name="high_risk">අධි අවදානම්</string>
-    <string name="mild_risk">මද අවදානම්</string>
-    <string name="low_risk">අඩු අවදානම්</string>
+    <string name="high_risk">SSSSSS</string>
+    <string name="mild_risk">Mild Risk</string>
+    <string name="low_risk">Low Risk</string>
     <string name="expose_to_covid_19">Expose to Covid-19</string>
     <string name="hint_phone_number">Enter Phone Number</string>
     <string name="button_signup">Sign Up</string>
@@ -18,14 +18,14 @@
     <string name="button_phone_verify">Verify</string>
     <string name="error_phone_verify">Code not Valid</string>
     <string name="_0">0</string>
-    <string name="button_date_pick">Pick a Date</string>
+    <string name="button_date_pick">Select the Date You Tested Positive</string>
     <string name="hint_covid_description">Add a Small Description</string>
     <string name="button_covid_positive">Submit</string>
 
     <!-- welcome screens -->
     <string name="about_app_heading">Social Distance Reminder Application</string>
     <string name="about_app_description">An app which reminds you to keep social distancing while notifying when you have encountered a covid positive patient</string>
-    <string name="bluetooth_heading">ඔබේ පෞද්ගලිකත්වය සහතික කර ඇත</string>
+    <string name="bluetooth_heading">This App Requires Bluetooth</string>
     <string name="bluetooth_description">Please on Bluetooth to get reminded of social distancing</string>
     <string name="privacy_heading">Your Privacy is Ensured</string>
     <string name="privacy_description">This app does not track your location</string>
@@ -33,4 +33,14 @@
     <string name="signup_description">Register to the application with your phone number</string>
     <string name="verify_phone_heading">Verify Your Mobile Number</string>
     <string name="verify_phone_description">Please enter the verification code sent to your mobile number</string>
+
+    <!-- other screens -->
+    <string name="covid_positive_heading">Are You Tested Positive for Covid?</string>
+    <string name="covid_positive_content">Notify others to stop the virus from spreading further</string>
+
+    <!-- App bar -->
+    <string name="notifications">Notifications</string>
+    <string name="notifications_content">Notifications from Covid Contacts</string>
+    <string name="covid_contact">Covid Contact</string>
+    <string name="covid_contact_content">Mark if tested positive for Covid</string>
 </resources>

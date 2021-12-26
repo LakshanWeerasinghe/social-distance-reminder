@@ -5,7 +5,6 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
@@ -18,22 +17,21 @@ import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 
 public class SocialDistanceReminderApplication extends Application {
 
+    public static final String HIGH_RISK_CHANNEL = "highRiskChannel";
+    public static final String MILD_RISK_CHANNEL = "mildRiskChannel";
     private static final String TAG = "SocialDistanceReminderApplication";
     private static SocialDistanceReminderApplication instance;
     private static Context appContext;
 
-    public static final String HIGH_RISK_CHANNEL = "highRiskChannel";
-    public static final String MILD_RISK_CHANNEL = "mildRiskChannel";
-
-    public static SocialDistanceReminderApplication getInstance(){
+    public static SocialDistanceReminderApplication getInstance() {
         return instance;
     }
 
-    public static Context getAppContext(){
+    public static Context getAppContext() {
         return appContext;
     }
 
-    public void setAppContext(Context mAppContext){
+    public void setAppContext(Context mAppContext) {
         appContext = mAppContext;
     }
 
@@ -51,7 +49,7 @@ public class SocialDistanceReminderApplication extends Application {
 
         SQLiteRepository sqLiteRepository = DBHelper.getInstance(this);
         User user = sqLiteRepository.getUserDetails();
-        if(user == null){
+        if (user == null) {
             sqLiteRepository.initializeTables();
         }
 
@@ -68,7 +66,7 @@ public class SocialDistanceReminderApplication extends Application {
             );
             channelHighRisk.setDescription("Risk High Channel");
             channelHighRisk.enableVibration(true);
-            channelHighRisk.setVibrationPattern(new long[] { 1000, 1000, 1000, 1000, 1000 });
+            channelHighRisk.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000});
             channelHighRisk.enableLights(true);
             channelHighRisk.setLightColor(Color.RED);
 
