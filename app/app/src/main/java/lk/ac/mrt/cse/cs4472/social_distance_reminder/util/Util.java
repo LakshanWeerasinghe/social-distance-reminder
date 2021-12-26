@@ -26,13 +26,13 @@ public class Util {
     }
 
     public static int getRiskLevel(double distance) {
-        if (1 >= distance) {
+        if (2 >= distance) {
             return ApplicationConstants.HIGH_RISK;
         }
-        if (3 >= distance) {
+        if (4 >= distance) {
             return ApplicationConstants.MILD_RISK;
         }
-        if (5 >= distance) {
+        if (6 >= distance) {
             return ApplicationConstants.LOW_RISK;
         }
         return 0;
