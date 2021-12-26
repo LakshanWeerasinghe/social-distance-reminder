@@ -27,6 +27,10 @@ public class NotificationListAdapter extends ArrayAdapter<NotificationModel> {
         TextView textView = convertView.findViewById(R.id.notification_list_item_text_view);
         textView.setText(notification.getMessage());
 
+        TextView covidPositiveDateTextView = convertView.findViewById(
+                R.id.notification_covid_positive_date_text_view);
+        covidPositiveDateTextView.setText(notification.getDate());
+
         return convertView;
     }
 }

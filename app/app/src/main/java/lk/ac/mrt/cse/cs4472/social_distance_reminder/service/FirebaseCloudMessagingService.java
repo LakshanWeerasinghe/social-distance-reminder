@@ -76,6 +76,7 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService{
 
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.setMessage(body);
+        notificationModel.setDate(covid_positive_date);
 
         sqLiteRepository.saveCovidContactedNotificationDetails(notificationModel);
 

@@ -56,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
     private static final String COVID_CONTACTED_NOTIFICATION_TABLE_NAME = "covid_contacted_notification";
     private static final String COL_CCNT_ID = "id";
     private static final String COL_CCNT_MESSAGE = "message";
+    private static final String COL_CCNT_positive_date = "date";
     // covid infected table
     private static final String COVID_INFECTED_TABLE_NAME = "covid_infected";
     private static final String COL_CIT_ID = "id";
@@ -116,6 +117,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         // covid contacted notification table
         covid_contacted_notification_table_query = "CREATE TABLE " + COVID_CONTACTED_NOTIFICATION_TABLE_NAME + " ( " +
                 COL_CCNT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_CCNT_positive_date + " TEXT," +
                 COL_CCNT_MESSAGE + " TEXT)";
 
         // covid infected table
@@ -257,6 +259,9 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
             @SuppressLint("Range")
             String message = cursor.getString(cursor.getColumnIndex(COL_CCNT_MESSAGE));
             notification.setMessage(message);
+            @SuppressLint("Range")
+            String date = cursor.getString(cursor.getColumnIndex(COL_CCNT_positive_date));
+            notification.setDate(date);
             notificationList.add(notification);
         }
         return notificationList;

@@ -30,6 +30,16 @@
                 android:textColor="#000"
                 android:paddingLeft="20dp"
                 android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/notification_covid_positive_date_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="@string/covid_positive_date"
+                android:textColor="#000"
+                android:paddingLeft="20dp"
+                android:textSize="16sp" />
         </LinearLayout>
 
 
