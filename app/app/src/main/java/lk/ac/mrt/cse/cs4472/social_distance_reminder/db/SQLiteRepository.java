@@ -1,9 +1,11 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.db;
 
+
 import java.util.List;
 import java.util.Map;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceTrackerModel;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.NotificationModel;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 
@@ -15,7 +17,9 @@ public interface SQLiteRepository {
 
     Map<Integer, Integer> getNumberOfContactsForEachRiskLevel();
 
-    void saveCovidContactedNotificationDetails();
+    void saveCovidContactedNotificationDetails(NotificationModel notification);
+
+    List<NotificationModel> getCovidContactedNotificationList();
 
     List<DeviceTrackerModel> getCloseContactList(String dateOfPositive);
 
@@ -28,4 +32,5 @@ public interface SQLiteRepository {
     void initializeTables();
 
     void updateUserDetails(User user);
+
 }

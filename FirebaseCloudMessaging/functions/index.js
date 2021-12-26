@@ -29,9 +29,10 @@ exports.covidContactNotification = functions.firestore.document("CovidContact/{d
                 admin.messaging().sendMulticast(
                     {
                         tokens: registrationTokens,
-                        notification: {
+                        data: {
                             title: "COVID PATIENT CONTACTED",
-                            body: snapshot.data().message
+                            body: snapshot.data().message,
+                            date: snapshot.data().covid_positive_date
                         }
                     }
                 );

@@ -1,5 +1,7 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.service;
 
+import static lk.ac.mrt.cse.cs4472.social_distance_reminder.application.SocialDistanceReminderApplication.COVID_CONTACTED_CHANNEL;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,8 +20,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.R;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.DBHelper;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.db.SQLiteRepository;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.NotificationModel;
 
 public class FirebaseCloudMessagingService extends FirebaseMessagingService{
+
+    private SQLiteRepository sqLiteRepository;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        sqLiteRepository = DBHelper.getInstance(this);
+    }
+
     // called every time it receives a registration token from the firebase cloud messaging sdk
     // here you should upload the token to an online storage
     // generally it will not give you a new token unless the app was reinstalled or if the user clears the app data from the settings
@@ -38,25 +53,18 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService{
     // this method is called every time it receives a notification from firebase
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        Log.d("Notification", "Notification: " + remoteMessage);
+        Log.d("NotificationModel", "NotificationModel: " + remoteMessage);
 
         // by default a notification will only appear when the app is closed or in the background
         super.onMessageReceived(remoteMessage);
-        String title = remoteMessage.getNotification().getTitle();
-        String body = remoteMessage.getNotification().getBody();
-        Log.d("Notification", "Notification: " + title + " " + body);
 
-        // purpose of the channel is to establish a link between our app and the android device
-        // we use the channel to set the behaviour of our notifications
-        final String CHANNEL_ID = "HEADS_UP_NOTIFICATIONS";
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            // with importance high, the notification appear as a pop up
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "MyNotificationChannel", NotificationManager.IMPORTANCE_HIGH);
-            // we need to add the channel to the android device
-            getSystemService(NotificationManager.class).createNotificationChannel(channel);
-        }
+        String title = remoteMessage.getData().get("title");
+        String body = remoteMessage.getData().get("body");
+        String covid_positive_date = remoteMessage.getData().get("date");
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        Log.d("NotificationModel", "NotificationModel: " + title + " " + body + " " + covid_positive_date);
+
+        Notification notification = new NotificationCompat.Builder(this, COVID_CONTACTED_CHANNEL)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setSmallIcon(R.drawable.ic_launcher_background)
@@ -65,6 +73,12 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService{
 
         // send the notification through the channel so it will get displayed
         NotificationManagerCompat.from(this).notify(1, notification);
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setMessage(body);
+
+        sqLiteRepository.saveCovidContactedNotificationDetails(notificationModel);
+
     }
 
     public static String getToken(Context context) {

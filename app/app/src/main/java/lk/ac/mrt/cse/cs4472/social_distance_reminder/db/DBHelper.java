@@ -19,6 +19,7 @@ import java.util.Map;
 
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.constants.ApplicationConstants;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.DeviceTrackerModel;
+import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.NotificationModel;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.User;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.models.UserConfig;
 import lk.ac.mrt.cse.cs4472.social_distance_reminder.util.CalendarUtil;
@@ -51,6 +52,10 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
     private static final String COL_CCT_DATES = "date";
     private static final String COL_CCT_CLASS = "class";
     private static final String COL_CCT_READ_NOTIFICATION = "read_notification";
+    // covid contacted notification table
+    private static final String COVID_CONTACTED_NOTIFICATION_TABLE_NAME = "covid_contacted_notification";
+    private static final String COL_CCNT_ID = "id";
+    private static final String COL_CCNT_MESSAGE = "message";
     // covid infected table
     private static final String COVID_INFECTED_TABLE_NAME = "covid_infected";
     private static final String COL_CIT_ID = "id";
@@ -82,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         Log.d(TAG, "begin creating db tables");
 
         String user_table_query, contact_tracking_table_query, covid_contacted_table_query,
-                covid_infected_table_query, user_config_table_query;
+                covid_contacted_notification_table_query, covid_infected_table_query, user_config_table_query;
 
         user_table_query = "CREATE TABLE " + USER_TABLE_NAME + " ( " +
                 COL_UT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -99,7 +104,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
                 COL_CTT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_CTT_CONTACTED_USER_ID + " TEXT, " +
                 COL_CTT_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                COL_CTT_CLASS + " INTEGER )";
+                COL_CTT_CLASS + " INTEGER)";
 
         // covid contacted table
         covid_contacted_table_query = "CREATE TABLE " + COVID_CONTACTED_TABLE_NAME + " ( " +
@@ -107,6 +112,11 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
                 COL_CCT_DATES + " DATE, " +
                 COL_CCT_CLASS + " INTEGER, " +
                 COL_CCT_READ_NOTIFICATION + " INTEGER)";
+
+        // covid contacted notification table
+        covid_contacted_notification_table_query = "CREATE TABLE " + COVID_CONTACTED_NOTIFICATION_TABLE_NAME + " ( " +
+                COL_CCNT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_CCNT_MESSAGE + " TEXT)";
 
         // covid infected table
         covid_infected_table_query = "CREATE TABLE " + COVID_INFECTED_TABLE_NAME + " ( " +
@@ -122,6 +132,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         db.execSQL(user_table_query);
         db.execSQL(contact_tracking_table_query);
         db.execSQL(covid_contacted_table_query);
+        db.execSQL(covid_contacted_notification_table_query);
         db.execSQL(covid_infected_table_query);
         db.execSQL(user_config_table_query);
 
@@ -135,6 +146,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CONTACT_TRACKING_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + COVID_CONTACTED_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + COVID_CONTACTED_NOTIFICATION_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + COVID_INFECTED_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + USER_CONFIG_TABLE_NAME);
 
@@ -220,8 +232,34 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
     }
 
     @Override
-    public void saveCovidContactedNotificationDetails() {
+    public void saveCovidContactedNotificationDetails(NotificationModel notification) {
+        Log.d(TAG, "begin saving covid contacted notification details");
 
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_CCNT_MESSAGE, notification.getMessage());
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.insert(COVID_CONTACTED_NOTIFICATION_TABLE_NAME, null, contentValues);
+
+        Log.d(TAG, "end saving covid contacted notification details");
+    }
+
+    @Override
+    public List<NotificationModel> getCovidContactedNotificationList() {
+        Log.d(TAG, "begin retrieve covid contacted notification list");
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        String covid_contacted_notifications_selecting_query = "SELECT * FROM " + COVID_CONTACTED_NOTIFICATION_TABLE_NAME;
+        Cursor cursor = sqLiteDatabase.rawQuery(covid_contacted_notifications_selecting_query, null);
+
+        List<NotificationModel> notificationList = new ArrayList<>();
+        while (cursor.moveToNext()){
+            NotificationModel notification = new NotificationModel();
+            @SuppressLint("Range")
+            String message = cursor.getString(cursor.getColumnIndex(COL_CCNT_MESSAGE));
+            notification.setMessage(message);
+            notificationList.add(notification);
+        }
+        return notificationList;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

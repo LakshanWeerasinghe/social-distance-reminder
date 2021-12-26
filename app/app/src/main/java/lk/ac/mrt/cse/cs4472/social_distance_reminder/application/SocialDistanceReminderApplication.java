@@ -19,6 +19,7 @@ public class SocialDistanceReminderApplication extends Application {
 
     public static final String HIGH_RISK_CHANNEL = "highRiskChannel";
     public static final String MILD_RISK_CHANNEL = "mildRiskChannel";
+    public static final String COVID_CONTACTED_CHANNEL = "covidContactedChannel";
     private static final String TAG = "SocialDistanceReminderApplication";
     private static SocialDistanceReminderApplication instance;
     private static Context appContext;
@@ -81,9 +82,21 @@ public class SocialDistanceReminderApplication extends Application {
             channelHighRisk.setVibrationPattern(null);
             channelHighRisk.enableLights(false);
 
+            NotificationChannel channelCovidContacted = new NotificationChannel(
+                    COVID_CONTACTED_CHANNEL,
+                    "Channel Covid Contacted",
+                    NotificationManager.IMPORTANCE_HIGH // importance level
+            );
+            channelCovidContacted.setDescription("Covid Contacted Channel");
+            channelCovidContacted.setSound(null, null);
+            channelCovidContacted.enableVibration(false);
+            channelCovidContacted.setVibrationPattern(null);
+            channelCovidContacted.enableLights(false);
+
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channelHighRisk);
             manager.createNotificationChannel(channelMildRisk);
+            manager.createNotificationChannel(channelCovidContacted);
         }
     }
 }
