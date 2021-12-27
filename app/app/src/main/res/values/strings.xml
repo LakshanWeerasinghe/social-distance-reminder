@@ -42,5 +42,8 @@
     <string name="notifications_content">Notifications from Covid Contacts</string>
     <string name="covid_contact">Covid Contact</string>
     <string name="covid_contact_content">Mark if tested positive for Covid</string>
+
+    <!-- Notifications -->
     <string name="covid_positive_date">Covid Positive Date</string>
+    <string name="covid_positive_message" >Covid Positive Message</string>
 </resources>

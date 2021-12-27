@@ -239,6 +239,7 @@ public class DBHelper extends SQLiteOpenHelper implements SQLiteRepository {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_CCNT_MESSAGE, notification.getMessage());
+        contentValues.put(COL_CCNT_positive_date, notification.getDate());
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.insert(COVID_CONTACTED_NOTIFICATION_TABLE_NAME, null, contentValues);

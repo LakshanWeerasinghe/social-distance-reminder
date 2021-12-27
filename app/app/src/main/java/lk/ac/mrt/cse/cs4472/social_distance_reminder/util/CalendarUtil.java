@@ -21,6 +21,12 @@ public class CalendarUtil {
         return sdf.format(timestamp);
     }
 
+    public static String getDateFromTimeStamp(String timestamp) {
+        Timestamp ts = new Timestamp(Long.parseLong(timestamp));
+        Date date = new Date(ts.getTime());
+        return date.toString();
+    }
+
     public static String getDateStrFromTimeStamp(String timeStampStr){
         return timeStampStr.split(" ")[0];
     }

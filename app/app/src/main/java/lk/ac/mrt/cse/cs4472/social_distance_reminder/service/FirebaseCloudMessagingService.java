@@ -1,6 +1,7 @@
 package lk.ac.mrt.cse.cs4472.social_distance_reminder.service;
 
 import static lk.ac.mrt.cse.cs4472.social_distance_reminder.application.SocialDistanceReminderApplication.COVID_CONTACTED_CHANNEL;
+import static lk.ac.mrt.cse.cs4472.social_distance_reminder.util.CalendarUtil.getDateFromTimeStamp;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -76,7 +77,7 @@ public class FirebaseCloudMessagingService extends FirebaseMessagingService{
 
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.setMessage(body);
-        notificationModel.setDate(covid_positive_date);
+        notificationModel.setDate(getDateFromTimeStamp(covid_positive_date));
 
         sqLiteRepository.saveCovidContactedNotificationDetails(notificationModel);
 

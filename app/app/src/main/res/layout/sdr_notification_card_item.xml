@@ -18,31 +18,58 @@
             <ImageView
                 android:layout_width="@dimen/icon_width"
                 android:layout_height="@dimen/icon_height"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 app:srcCompat="@drawable/notification_icon" />
 
-            <TextView
-                android:id="@+id/notification_list_item_text_view"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Notification Card"
-                android:textColor="#000"
-                android:paddingLeft="20dp"
-                android:textSize="16sp" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/notification_covid_positive_date_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="@string/covid_positive_date"
-                android:textColor="#000"
-                android:paddingLeft="20dp"
-                android:textSize="16sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Covid Positive Date"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:paddingLeft="20dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/notification_covid_positive_date_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="@string/covid_positive_date"
+                    android:textColor="@color/notification_content_color"
+                    android:paddingLeft="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Message"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:paddingLeft="20dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/notification_list_item_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="@string/covid_positive_message"
+                    android:textColor="@color/notification_content_color"
+                    android:paddingLeft="20dp"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
-
-
 
     </androidx.cardview.widget.CardView>
 </FrameLayout>

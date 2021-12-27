@@ -24,4 +24,7 @@
     <color name="intro_title_color">#000000</color>
     <color name="intro_description_color">#656565</color>
     <color name="app_background_color">#efefef</color>
+
+    <!-- notification -->
+    <color name="notification_content_color">#656565</color>
 </resources>
